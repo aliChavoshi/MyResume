@@ -86,7 +86,7 @@ ul{ list-style:none; }
 }
 
 .avatar{
-  width:88px; height:88px;
+  width:18rem; height:18rem;
   border-radius:50%;
   background:linear-gradient(135deg, var(--accent), #14A085);
   display:flex; align-items:center; justify-content:center;
@@ -287,7 +287,7 @@ ul{ list-style:none; }
   line-height:1.6;
 }
 .timeline__date{
-  font-family:var(--font-mono);
+  font-family:var(--font-fa) !important;
   font-size:.78rem;
   font-weight:600;
   color:var(--accent);
