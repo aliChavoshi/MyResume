@@ -1,471 +1,646 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="en" dir="ltr">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>علی چاوشی — توسعه‌دهنده ارشد Full-Stack | ASP.NET Core &amp; Angular</title>
-<meta name="description" content="علی چاوشی — توسعه‌دهنده ارشد و معمار نرم‌افزار با بیش از ۹ سال تجربه در ASP.NET Core، C#، Angular و معماری میکروسرویس.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-fa="علی چاوشی — توسعه‌دهنده ارشد Full-Stack | ASP.NET Core و Angular">Ali Chavoshi — Senior Full-Stack
+    Developer | ASP.NET Core &amp; Angular</title>
+  <meta name="description"
+    content="Ali Chavoshi — Senior software developer and architect with 9+ years of experience in ASP.NET Core, C#, Angular, and microservice architecture."
+    data-fa="علی چاوشی — توسعه‌دهنده ارشد و معمار نرم‌افزار با بیش از ۹ سال تجربه در ASP.NET Core، C#، Angular و معماری میکروسرویس.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
 
-<div class="page">
+  <!-- ===== LANGUAGE TOGGLE ===== -->
+  <button type="button" id="langToggle" class="lang-toggle" aria-label="Switch language / تغییر زبان">
+    <span class="lang-toggle__option" data-lang-option="en">EN</span>
+    <span class="lang-toggle__sep">/</span>
+    <span class="lang-toggle__option" data-lang-option="fa">FA</span>
+    <span class="lang-toggle__thumb" aria-hidden="true"></span>
+  </button>
 
-  <!-- ===== SIDEBAR / PROFILE CARD ===== -->
-  <aside class="sidebar">
-    <div class="sidebar__inner">
-      <div class="avatar-wrap">
-        <img class="avatar" src="images/myself.png" alt="تصویر پروفایل علی چاوشی">
-      </div>
-      <h1 class="sidebar__name">علی چاوشی</h1>
-      <p class="sidebar__role">Asp.net Core – Angular</p>
-      <p class="sidebar__role-fa">توسعه‌دهنده ارشد و معمار نرم‌افزار</p>
+  <div class="page">
 
-      <div class="sidebar__section">
-        <h2 class="sidebar__heading">اطلاعات تماس</h2>
-        <ul class="contact-list">
-          <li>
-            <span class="contact-list__icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.9 21 3 13.1 3 3.5c0-.6.4-1 1-1H7.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.2 1L6.6 10.8z"/></svg>
-            </span>
-            <a href="tel:+989130242780" dir="ltr">0913 024 2780</a>
-          </li>
-          <li>
-            <span class="contact-list__icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M3 5.5C3 4.7 3.7 4 4.5 4h15c.8 0 1.5.7 1.5 1.5v13c0 .8-.7 1.5-1.5 1.5h-15c-.8 0-1.5-.7-1.5-1.5v-13zm2 .5v.4l7 5 7-5V6H5zm14 2.4-6.4 4.6a1 1 0 0 1-1.2 0L5 8.4V18h14V8.4z"/></svg>
-            </span>
-            <a href="mailto:AliChavoshii1372@gmail.com" dir="ltr" class="break">AliChavoshii1372@gmail.com</a>
-          </li>
-          <li>
-            <span class="contact-list__icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 6.1 12.1 6.4 12.4a.8.8 0 0 0 1.2 0C13 21.1 19 14.2 19 9a7 7 0 0 0-7-7zm0 9.8A2.8 2.8 0 1 1 12 6.2a2.8 2.8 0 0 1 0 5.6z"/></svg>
-            </span>
-            <span>اصفهان – کاشان</span>
-          </li>
-        </ul>
-      </div>
+    <!-- ===== SIDEBAR / PROFILE CARD ===== -->
+    <aside class="sidebar">
+      <div class="sidebar__inner">
+        <div class="avatar-wrap">
+          <img class="avatar" src="images/myself.png" alt="Ali Chavoshi profile photo"
+            data-fa-alt="تصویر پروفایل علی چاوشی">
+        </div>
+        <h1 class="sidebar__name" data-fa="علی چاوشی">Ali Chavoshi</h1>
+        <p class="sidebar__role">Asp.net Core – Angular</p>
+        <p class="sidebar__role-fa" data-fa="توسعه‌دهنده ارشد و معمار نرم‌افزار">Senior Developer &amp; Software
+          Architect</p>
 
-      <div class="sidebar__section">
-        <h2 class="sidebar__heading">شبکه‌های اجتماعی</h2>
-        <ul class="contact-list">
-          <li>
-            <span class="contact-list__icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3V9zm7 0h3.8v1.7h.05c.53-1 1.83-2 3.77-2 4.03 0 4.78 2.6 4.78 6V21h-4v-5.6c0-1.35-.03-3.08-1.9-3.08-1.9 0-2.2 1.45-2.2 2.98V21h-4V9z"/></svg>
-            </span>
-            <a href="https://www.linkedin.com/in/ali-chavoshi-476551182" target="_blank" rel="noopener">LinkedIn</a>
-          </li>
-          <li>
-            <span class="contact-list__icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-3.16 19.5c.5.1.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.15-1.1-1.46-1.1-1.46-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.9.83.09-.65.35-1.08.63-1.33-2.22-.25-4.56-1.11-4.56-4.95 0-1.1.39-2 1.03-2.7-.1-.25-.45-1.28.1-2.66 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.3 2.75-1.02 2.75-1.02.55 1.38.2 2.41.1 2.66.64.7 1.03 1.6 1.03 2.7 0 3.85-2.34 4.7-4.57 4.94.36.32.68.94.68 1.9v2.82c0 .27.18.59.69.48A10 10 0 0 0 12 2z"/></svg>
-            </span>
-            <a href="https://github.com/aliChavoshi/" target="_blank" rel="noopener">GitHub</a>
-          </li>
-        </ul>
-      </div>
+        <div class="sidebar__section">
+          <h2 class="sidebar__heading" data-fa="اطلاعات تماس">Contact</h2>
+          <ul class="contact-list">
+            <li>
+              <span class="contact-list__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.9 21 3 13.1 3 3.5c0-.6.4-1 1-1H7.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.2 1L6.6 10.8z" />
+                </svg>
+              </span>
+              <a href="tel:+989130242780" dir="ltr">0913 024 2780</a>
+            </li>
+            <li>
+              <span class="contact-list__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M3 5.5C3 4.7 3.7 4 4.5 4h15c.8 0 1.5.7 1.5 1.5v13c0 .8-.7 1.5-1.5 1.5h-15c-.8 0-1.5-.7-1.5-1.5v-13zm2 .5v.4l7 5 7-5V6H5zm14 2.4-6.4 4.6a1 1 0 0 1-1.2 0L5 8.4V18h14V8.4z" />
+                </svg>
+              </span>
+              <a href="mailto:AliChavoshii1372@gmail.com" dir="ltr" class="break">AliChavoshii1372@gmail.com</a>
+            </li>
+            <li>
+              <span class="contact-list__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M12 2a7 7 0 0 0-7 7c0 5.2 6.1 12.1 6.4 12.4a.8.8 0 0 0 1.2 0C13 21.1 19 14.2 19 9a7 7 0 0 0-7-7zm0 9.8A2.8 2.8 0 1 1 12 6.2a2.8 2.8 0 0 1 0 5.6z" />
+                </svg>
+              </span>
+              <span data-fa="اصفهان – کاشان">Isfahan – Kashan, Iran</span>
+            </li>
+          </ul>
+        </div>
 
-      <div class="sidebar__section">
-        <h2 class="sidebar__heading">مهارت‌های اصلی</h2>
-        <div class="pill-list">
-          <span class="pill">Angular</span>
-          <span class="pill">#C</span>
-          <span class="pill">ASP.NET Core</span>
-          <span class="pill">Web API</span>
-          <span class="pill">DevOps</span>
+        <div class="sidebar__section">
+          <h2 class="sidebar__heading" data-fa="شبکه‌های اجتماعی">Social</h2>
+          <ul class="contact-list">
+            <li>
+              <span class="contact-list__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3V9zm7 0h3.8v1.7h.05c.53-1 1.83-2 3.77-2 4.03 0 4.78 2.6 4.78 6V21h-4v-5.6c0-1.35-.03-3.08-1.9-3.08-1.9 0-2.2 1.45-2.2 2.98V21h-4V9z" />
+                </svg>
+              </span>
+              <a href="https://www.linkedin.com/in/ali-chavoshi-476551182" target="_blank" rel="noopener">LinkedIn</a>
+            </li>
+            <li>
+              <span class="contact-list__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M12 2a10 10 0 0 0-3.16 19.5c.5.1.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.15-1.1-1.46-1.1-1.46-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.9.83.09-.65.35-1.08.63-1.33-2.22-.25-4.56-1.11-4.56-4.95 0-1.1.39-2 1.03-2.7-.1-.25-.45-1.28.1-2.66 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.3 2.75-1.02 2.75-1.02.55 1.38.2 2.41.1 2.66.64.7 1.03 1.6 1.03 2.7 0 3.85-2.34 4.7-4.57 4.94.36.32.68.94.68 1.9v2.82c0 .27.18.59.69.48A10 10 0 0 0 12 2z" />
+                </svg>
+              </span>
+              <a href="https://github.com/aliChavoshi/" target="_blank" rel="noopener">GitHub</a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="sidebar__section">
+          <h2 class="sidebar__heading" data-fa="مهارت‌های اصلی">Core Skills</h2>
+          <div class="pill-list">
+            <span class="pill">Angular</span>
+            <span class="pill">C#</span>
+            <span class="pill">ASP.NET Core</span>
+            <span class="pill">Web API</span>
+            <span class="pill">DevOps</span>
+          </div>
+        </div>
+
+        <div class="sidebar__section">
+          <h2 class="sidebar__heading" data-fa="زبان‌ها">Languages</h2>
+          <ul class="lang-list">
+            <li><span data-fa="فارسی">Persian</span><span class="lang-list__level" data-fa="زبان مادری">Native</span>
+            </li>
+            <li><span data-fa="انگلیسی">English</span><span class="lang-list__level">Intermediate</span></li>
+          </ul>
+        </div>
+
+        <div class="sidebar__section">
+          <h2 class="sidebar__heading" data-fa="اطلاعات فردی">Personal Info</h2>
+          <ul class="lang-list">
+            <li><span data-fa="تاریخ تولد">Date of Birth</span><span class="lang-list__level" data-fa="۱۳۷۲">1993</span>
+            </li>
+            <li><span data-fa="وضعیت تاهل">Marital Status</span><span class="lang-list__level"
+                data-fa="متاهل">Married</span></li>
+          </ul>
         </div>
       </div>
+    </aside>
 
-      <div class="sidebar__section">
-        <h2 class="sidebar__heading">زبان‌ها</h2>
-        <ul class="lang-list">
-          <li><span>فارسی</span><span class="lang-list__level">زبان مادری</span></li>
-          <li><span>انگلیسی</span><span class="lang-list__level">Intermediate</span></li>
-        </ul>
-      </div>
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="content">
 
-      <div class="sidebar__section">
-        <h2 class="sidebar__heading">اطلاعات فردی</h2>
-        <ul class="lang-list">
-          <li><span>تاریخ تولد</span><span class="lang-list__level">۱۳۷۲</span></li>
-          <li><span>وضعیت تاهل</span><span class="lang-list__level">متاهل</span></li>
-        </ul>
-      </div>
-    </div>
-  </aside>
-
-  <!-- ===== MAIN CONTENT ===== -->
-  <main class="content">
-
-    <!-- ABOUT -->
-    <section class="block reveal" id="about">
-      <h2 class="block__title">
-        <span class="block__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-4.4 0-8 2.2-8 5v1a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-1c0-2.8-3.6-5-8-5z"/></svg></span>
-        <span>درباره من</span>
-      </h2>
-      <p class="about-text">
-        توسعه‌دهنده ارشد و معمار نرم‌افزار با بیش از <strong>۹ سال تجربه</strong> در طراحی و توسعه سیستم‌های سازمانی،
-        ERP، تجارت الکترونیک و سامانه‌های صنعتی مبتنی بر وب. متخصص در <strong>ASP.NET Core</strong>، <strong>#C</strong>،
-        <strong>Angular</strong> و معماری میکروسرویس با تمرکز بر ساخت راهکارهای مقیاس‌پذیر، پایدار و قابل نگهداری.
-        تجربه عملی در پیاده‌سازی سامانه‌های ردیابی تولید، کنترل کیفیت، مانیتورینگ خطوط تولید، مدیریت زنجیره تأمین،
-        انبارداری و برنامه‌ریزی تولید دارم و در طراحی راهکارها از اصولی مانند <strong>Clean Architecture</strong>،
-        <strong>CQRS</strong>، <strong>Design Patterns</strong> و کدنویسی تمیز استفاده می‌کنم. همچنین در کنار فعالیت
-        حرفه‌ای، با آموزش تخصصی به بیش از <strong>۲۰۰۰ دانشجو</strong>، به انتقال تجربه و رشد جامعه توسعه‌دهندگان کمک
-        کرده‌ام.
-      </p>
-    </section>
-
-    <!-- SKILLS -->
-    <section class="block reveal" id="skills">
-      <h2 class="block__title">
-        <span class="block__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></span>
-        <span>مهارت‌ها</span>
-      </h2>
-      <ul class="check-list">
-        <li>توسعه ارشد Full-Stack با تمرکز بر ASP.NET Core، #C، Web API و Angular.</li>
-        <li>طراحی معماری نرم‌افزارها با استفاده از Clean Architecture، CQRS و Design Patterns.</li>
-        <li>طراحی و پیاده‌سازی سیستم‌های میکروسرویسی با فناوری‌هایی مانند Docker، Kubernetes، RabbitMQ و gRPC.</li>
-        <li>توسعه سیستم‌های سازمانی، ERP و صنعتی در حوزه‌های تولید، زنجیره تأمین، ردیابی محصول، کنترل کیفیت و
-          مانیتورینگ خطوط تولید.</li>
-        <li>تحلیل نیازمندی، حل مسئله، رهبری فنی و انتقال دانش با سابقه آموزش تخصصی به بیش از ۲۰۰۰ دانشجو.</li>
-      </ul>
-
-      <h3 class="block__subtitle">مهارت‌های نرم</h3>
-      <div class="badge-list">
-        <span class="badge"><i></i>مسئولیت‌پذیری</span>
-        <span class="badge"><i></i>مدیریت تیم</span>
-        <span class="badge"><i></i>رقابت‌جویی</span>
-        <span class="badge"><i></i>گزارش‌نویسی</span>
-        <span class="badge"><i></i>مدیریت زمان و برنامه‌ریزی</span>
-        <span class="badge"><i></i>مهارت حل مسئله</span>
-      </div>
-    </section>
-
-    <!-- EXPERIENCE -->
-    <section class="block reveal" id="experience">
-      <h2 class="block__title">
-        <span class="block__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 3a1 1 0 0 0-1 1v1H4a2 2 0 0 0-2 2v3h20V7a2 2 0 0 0-2-2h-4V4a1 1 0 0 0-1-1H9zm1 2h4V5h-4v0zM2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6H2z"/></svg></span>
-        <span>سوابق کاری</span>
-      </h2>
-
-      <div class="timeline">
-        <article class="timeline__entry">
-          <div class="timeline__dot timeline__dot--live" title="در حال انجام"></div>
-          <div class="timeline__body">
-            <div class="timeline__header">
-              <h3>پروژه ردیابی محصول و کنترل کیفی از تولید تا ارسال</h3>
-              <span class="status-chip status-chip--live"><i></i>در حال انجام</span>
-            </div>
-            <p class="timeline__meta">۱۳۹۷ – تاکنون</p>
-            <ul class="dash-list">
-              <li>طراحی و پیاده‌سازی سیستم Traceability کامل محصول از تولید تا انبار.</li>
-              <li>توسعه ماژول اعتبارسنجی بارکد جهت جلوگیری از صدور و ارسال بارکد تکراری یا اشتباه.</li>
-              <li>ایجاد سیستم مانیتورینگ کنترل کیفی (QC) شامل ثبت جزئیات تست و اپراتور مسئول.</li>
-              <li>توسعه داشبورد انبارداری لحظه‌ای (مبتنی بر تبلت) برای مدیریت موجودی و ارسال.</li>
-            </ul>
-          </div>
-        </article>
-
-        <article class="timeline__entry">
-          <div class="timeline__dot timeline__dot--live" title="در حال انجام"></div>
-          <div class="timeline__body">
-            <div class="timeline__header">
-              <h3>پروژه ERP/Monitoring — شرکت ایسکرا اتوالکتریک ایران</h3>
-              <span class="status-chip status-chip--live"><i></i>در حال انجام</span>
-            </div>
-            <p class="timeline__meta">۱۳۹۷ – تاکنون</p>
-            <ul class="dash-list dash-list--two-col">
-              <li>پیاده‌سازی سیستم مانیتورینگ خطوط تولید جهت شفاف‌سازی آمار تولید، توقفات و ضایعات.</li>
-              <li>توسعه سیستم Andon برای مشاهده آنلاین توقفات و ارسال خودکار پیامک‌های هشدار.</li>
-              <li>ثبت و تحلیل آمار تولید با قابلیت مقایسه عملکرد ایستگاه‌ها برای بهبود بهره‌وری.</li>
-              <li>ایجاد سیستم مدیریت ضایعات و خرابی با تفکیک دقیق داده‌ها و تعیین میزان مجاز خطا.</li>
-              <li>پیاده‌سازی FMEA برای پیشگیری و مدیریت خطاها در فرآیندهای تولید.</li>
-              <li>نمایش فیلم آموزشی برای اپراتورها از طریق تبلت در هر ایستگاه جهت بهبود مهارت‌های عملیاتی.</li>
-              <li>پایش لحظه‌ای موجودی ایستگاه‌ها و بهینه‌سازی برنامه‌ریزی تولید برای افزایش بهره‌وری.</li>
-              <li>محاسبه خودکار تعداد ضرب قالب‌ها و تخمین عمر مفید آن‌ها برای کاهش هزینه‌های نگهداری.</li>
-              <li>بهبود مدیریت دپو و برنامه‌ریزی خطوط تولید از طریق نظارت لحظه‌ای بر موجودی هر ایستگاه.</li>
-              <li>محاسبه پاداش اپراتورها بر اساس وضعیت کارکرد و راندمان در هر ماه.</li>
-              <li>ارائه گزارش عملکرد کامل هر اپراتور در صورت نیاز.</li>
-            </ul>
-          </div>
-        </article>
-
-        <article class="timeline__entry">
-          <div class="timeline__dot timeline__dot--live" title="در حال انجام"></div>
-          <div class="timeline__body">
-            <div class="timeline__header">
-              <h3>ساخت ERP سفارشی برای شرکت یکتا فولاد مهراد کویر
-                <a href="https://mehradkavir.com/" target="_blank" rel="noopener" class="inline-link">Mehradkavir.com</a>
-              </h3>
-              <span class="status-chip status-chip--live"><i></i>در حال انجام</span>
-            </div>
-            <p class="timeline__meta">Freelance Web Developer</p>
-            <p class="prose">
-              در پروژه سامانه اختصاصی مهراد کویر، نقش مؤثری در طراحی و توسعه راهکاری یکپارچه برای مدیریت زنجیره تأمین
-              و فرآیندهای سازمانی داشته‌ام. این سامانه بخش‌هایی مانند تولید و برنامه‌ریزی، انبارداری، امور بازرگانی،
-              فروشگاه، مدیریت ارتباط با مشتریان و تأمین‌کنندگان را پوشش می‌دهد و با هدف افزایش شفافیت عملیاتی، کاهش
-              هزینه‌های لجستیکی و بهینه‌سازی جریان اطلاعات، مواد و کالا پیاده‌سازی شده است. این پروژه شامل پنل
-              فروشگاهی، پنل ادمین و وب‌سایت معرفی شرکت می‌باشد.
-            </p>
-          </div>
-        </article>
-
-        <article class="timeline__entry">
-          <div class="timeline__dot timeline__dot--done" title="تکمیل‌شده"></div>
-          <div class="timeline__body">
-            <div class="timeline__header">
-              <h3>Insanustu Company <span class="muted-text">— Freelance Angular Developer</span></h3>
-              <span class="status-chip status-chip--done"><i></i>تکمیل‌شده</span>
-            </div>
-            <p class="timeline__meta">۱۴۰۱ – ۱۴۰۲</p>
-            <p class="prose">
-              همکاری به‌عنوان Freelance Angular Developer با شرکت نرم‌افزاری Insanustu مستقر در ترکیه، به‌صورت ریموت
-              به مدت یک سال. در این همکاری، در توسعه، بهینه‌سازی و نگهداری پروژه‌های مبتنی بر Angular نقش مؤثری داشته
-              و با تمرکز بر بهبود کیفیت کد، ساختار فرانت‌اند و تجربه کاربری، در پیشبرد پروژه‌های نرم‌افزاری مشارکت
-              کرده‌ام.
-            </p>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <!-- TEACHING -->
-    <section class="block reveal" id="teaching">
-      <h2 class="block__title">
-        <span class="block__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 1 8l11 5 9-4.1V17h2V8L12 3zM5 12.2v3.6c0 1.7 3.1 4.2 7 4.2s7-2.5 7-4.2v-3.6l-7 3.2-7-3.2z"/></svg></span>
-        <span>مدرس و مشاور</span>
-      </h2>
-
-      <p class="prose">
-        در کنار فعالیت حرفه‌ای در توسعه و معماری نرم‌افزار، به آموزش و انتقال تجربه نیز توجه ویژه‌ای دارم. تاکنون با
-        انتشار دوره‌های تخصصی در زمینه توسعه وب، ASP.NET Core، Angular، Docker و معماری میکروسرویس در سایت
-        <strong>دانشجویار</strong>، به بیش از <strong>۲۰۰۰ دانشجو</strong> آموزش داده‌ام و در سال ۱۴۰۰ عنوان
-        <strong>بهترین مدرس دانشجویار</strong> را کسب کرده‌ام.
-      </p>
-
-      <ul class="course-list">
-        <li>
-          <a href="https://www.daneshjooyar.com/microservice/" target="_blank" rel="noopener">
-            <span class="course-list__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg></span>
-            <span class="course-list__text">دوره پیاده‌سازی پروژه فروشگاهی با میکروسرویس‌های ASP.NET Core و Angular</span>
-            <span class="course-list__arrow" aria-hidden="true">‹</span>
-          </a>
-        </li>
-        <li>
-          <a href="https://www.daneshjooyar.com/docker/" target="_blank" rel="noopener">
-            <span class="course-list__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg></span>
-            <span class="course-list__text">آموزش صفر تا صد Docker</span>
-            <span class="course-list__arrow" aria-hidden="true">‹</span>
-          </a>
-        </li>
-        <li>
-          <a href="https://www.daneshjooyar.com/asp-net-core-and-angular-chat-room/" target="_blank" rel="noopener">
-            <span class="course-list__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg></span>
-            <span class="course-list__text">آموزش صفر تا صد چت‌روم آنلاین (Angular - #C)</span>
-            <span class="course-list__arrow" aria-hidden="true">‹</span>
-          </a>
-        </li>
-        <li>
-          <a href="https://www.daneshjooyar.com/%D9%88%D8%A8-%D8%B3%D8%A7%DB%8C%D8%AA-%D9%81%D8%B1%D9%88%D8%B4%DA%AF%D8%A7%D9%87%DB%8C-%D9%85%D8%B4%D8%A7%D8%A8%D9%87-%D8%AF%DB%8C%D8%AC%DB%8C-%DA%A9%D8%A7%D9%84%D8%A7/" target="_blank" rel="noopener">
-            <span class="course-list__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg></span>
-            <span class="course-list__text">آموزش صفر تا صد ساخت یک وب‌سایت فروشگاهی (Angular - #C)</span>
-            <span class="course-list__arrow" aria-hidden="true">‹</span>
-          </a>
-        </li>
-        <li>
-          <a href="https://www.daneshjooyar.com/%D8%AF%D9%88%D8%B1%D9%87-%D8%AC%D8%A7%D9%85%D8%B9-%D8%A2%D9%85%D9%88%D8%B2%D8%B4-%D8%A7%D9%86%DA%AF%D9%88%D9%84%D8%A7%D8%B1-angular-12-%D8%A8%D9%87-%D8%B5%D9%88%D8%B1%D8%AA-%D9%BE%D8%B1%D9%88%DA%98/" target="_blank" rel="noopener">
-            <span class="course-list__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg></span>
-            <span class="course-list__text">آموزش صفر تا صد آنگولار (Angular)</span>
-            <span class="course-list__arrow" aria-hidden="true">‹</span>
-          </a>
-        </li>
-        <li>
-          <a href="https://www.daneshjooyar.com/asp-net-core-training/" target="_blank" rel="noopener">
-            <span class="course-list__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg></span>
-            <span class="course-list__text">آموزش صفر تا صد ASP.NET Core</span>
-            <span class="course-list__arrow" aria-hidden="true">‹</span>
-          </a>
-        </li>
-      </ul>
-
-      <a href="https://www.daneshjooyar.com/teacher/alichavoshi" target="_blank" rel="noopener" class="btn-teacher">
-        مشاهده پروفایل مدرس در دانشجویار
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6 8.6 7.4 13.2 12l-4.6 4.6L10 18l6-6z"/></svg>
-      </a>
-    </section>
-
-    <!-- OPEN SOURCE PROJECTS -->
-    <section class="block reveal" id="projects">
-      <h2 class="block__title">
-        <span class="block__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-3.16 19.5c.5.1.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.15-1.1-1.46-1.1-1.46-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.9.83.09-.65.35-1.08.63-1.33-2.22-.25-4.56-1.11-4.56-4.95 0-1.1.39-2 1.03-2.7-.1-.25-.45-1.28.1-2.66 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.3 2.75-1.02 2.75-1.02.55 1.38.2 2.41.1 2.66.64.7 1.03 1.6 1.03 2.7 0 3.85-2.34 4.7-4.57 4.94.36.32.68.94.68 1.9v2.82c0 .27.18.59.69.48A10 10 0 0 0 12 2z"/></svg></span>
-        <span>پروژه‌های متن‌باز</span>
-      </h2>
-
-      <div class="project-grid">
-
-        <article class="project">
-          <div class="project__head">
-            <h3>Ecommerce-Microservice</h3>
-            <a href="https://github.com/aliChavoshi/Ecommerce-Microservice" target="_blank" rel="noopener" class="project__link">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.5c.5.1.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.15-1.1-1.46-1.1-1.46-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.9.83.09-.65.35-1.08.63-1.33-2.22-.25-4.56-1.11-4.56-4.95 0-1.1.39-2 1.03-2.7-.1-.25-.45-1.28.1-2.66 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.3 2.75-1.02 2.75-1.02.55 1.38.2 2.41.1 2.66.64.7 1.03 1.6 1.03 2.7 0 3.85-2.34 4.7-4.57 4.94.36.32.68.94.68 1.9v2.82c0 .27.18.59.69.48A10 10 0 0 0 12 2z"/></svg>
-              <span>مشاهده در GitHub</span>
-            </a>
-          </div>
-          <div class="tech-badges" dir="ltr">
-            <span class="tech-badge">ASP.NET Core Web API 9</span>
-            <span class="tech-badge">Angular 20</span>
-            <span class="tech-badge">Docker</span>
-            <span class="tech-badge">Kubernetes</span>
-          </div>
-          <ul class="dot-list">
-            <li>پیاده‌سازی فروشگاه اینترنتی مبتنی بر معماری Microservices</li>
-            <li>استفاده از Docker و Kubernetes برای استقرار و مقیاس‌دهی سرویس‌ها</li>
-            <li>RabbitMQ و gRPC برای ارتباط و پیام‌رسانی بین سرویس‌ها</li>
-            <li>Identity Server برای احراز هویت و مدیریت کاربران</li>
-            <li>استفاده از SQL Server، MongoDB، PostgreSQL و Redis برای مدیریت داده‌ها</li>
-            <li>Ocelot و Nginx به عنوان API Gateway و Reverse Proxy</li>
-          </ul>
-        </article>
-
-        <article class="project">
-          <div class="project__head">
-            <h3>HelpDeskSystem</h3>
-            <a href="https://github.com/aliChavoshi/HelpDeskSystem" target="_blank" rel="noopener" class="project__link">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.5c.5.1.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.15-1.1-1.46-1.1-1.46-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.9.83.09-.65.35-1.08.63-1.33-2.22-.25-4.56-1.11-4.56-4.95 0-1.1.39-2 1.03-2.7-.1-.25-.45-1.28.1-2.66 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.3 2.75-1.02 2.75-1.02.55 1.38.2 2.41.1 2.66.64.7 1.03 1.6 1.03 2.7 0 3.85-2.34 4.7-4.57 4.94.36.32.68.94.68 1.9v2.82c0 .27.18.59.69.48A10 10 0 0 0 12 2z"/></svg>
-              <span>مشاهده در GitHub</span>
-            </a>
-          </div>
-          <div class="tech-badges" dir="ltr">
-            <span class="tech-badge">ASP.NET Core 8</span>
-            <span class="tech-badge">EF Core</span>
-            <span class="tech-badge">SQL Server</span>
-          </div>
-          <ul class="dot-list">
-            <li>پیاده‌سازی سیستم تیکتینگ و پشتیبانی آنلاین کاربران</li>
-            <li>طراحی شده بر اساس Clean Architecture و اصول SOLID</li>
-            <li>مدیریت کاربران، نقش‌ها و سطح دسترسی‌ها</li>
-            <li>استفاده از Repository Pattern و Dependency Injection</li>
-            <li>لاگ‌گیری پیشرفته با Serilog و مستندسازی API با Swagger</li>
-            <li>پشتیبانی از Docker برای اجرای آسان پروژه</li>
-          </ul>
-        </article>
-
-        <article class="project">
-          <div class="project__head">
-            <h3>EduShopBackend</h3>
-            <a href="https://github.com/aliChavoshi/EduShopBackend" target="_blank" rel="noopener" class="project__link">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.5c.5.1.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.15-1.1-1.46-1.1-1.46-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.9.83.09-.65.35-1.08.63-1.33-2.22-.25-4.56-1.11-4.56-4.95 0-1.1.39-2 1.03-2.7-.1-.25-.45-1.28.1-2.66 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.3 2.75-1.02 2.75-1.02.55 1.38.2 2.41.1 2.66.64.7 1.03 1.6 1.03 2.7 0 3.85-2.34 4.7-4.57 4.94.36.32.68.94.68 1.9v2.82c0 .27.18.59.69.48A10 10 0 0 0 12 2z"/></svg>
-              <span>مشاهده در GitHub</span>
-            </a>
-          </div>
-          <div class="tech-badges" dir="ltr">
-            <span class="tech-badge">ASP.NET Core Web API 8</span>
-            <span class="tech-badge">Clean Architecture</span>
-            <span class="tech-badge">CQRS</span>
-          </div>
-          <ul class="dot-list">
-            <li>Backend فروشگاه اینترنتی با معماری Clean Architecture</li>
-            <li>استفاده از CQRS برای مدیریت درخواست‌ها و افزایش خوانایی کد</li>
-            <li>احراز هویت کاربران با JWT Authentication</li>
-            <li>Repository Pattern، Unit Of Work و Fluent Validation</li>
-            <li>Redis برای Cache و افزایش Performance سیستم</li>
-            <li>Docker Compose، Unit Testing و GitHub Actions برای CI/CD</li>
-          </ul>
-        </article>
-
-        <article class="project">
-          <div class="project__head">
-            <h3>EduShopClient</h3>
-            <a href="https://github.com/aliChavoshi/EduShopClient" target="_blank" rel="noopener" class="project__link">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.5c.5.1.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.15-1.1-1.46-1.1-1.46-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.9.83.09-.65.35-1.08.63-1.33-2.22-.25-4.56-1.11-4.56-4.95 0-1.1.39-2 1.03-2.7-.1-.25-.45-1.28.1-2.66 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.3 2.75-1.02 2.75-1.02.55 1.38.2 2.41.1 2.66.64.7 1.03 1.6 1.03 2.7 0 3.85-2.34 4.7-4.57 4.94.36.32.68.94.68 1.9v2.82c0 .27.18.59.69.48A10 10 0 0 0 12 2z"/></svg>
-              <span>مشاهده در GitHub</span>
-            </a>
-          </div>
-          <div class="tech-badges" dir="ltr">
-            <span class="tech-badge">Angular 14</span>
-            <span class="tech-badge">Angular Material</span>
-            <span class="tech-badge">RxJS</span>
-          </div>
-          <ul class="dot-list">
-            <li>Frontend فروشگاه اینترنتی توسعه داده شده با Angular</li>
-            <li>استفاده از Angular Material برای طراحی رابط کاربری</li>
-            <li>پیاده‌سازی سبد خرید، سفارشات، علاقه‌مندی‌ها و پرداخت آنلاین</li>
-            <li>مدیریت کاربران با JWT Authentication</li>
-            <li>استفاده از Routing، Lazy Loading و RxJS برای بهینه‌سازی عملکرد</li>
-          </ul>
-        </article>
-
-        <article class="project">
-          <div class="project__head">
-            <h3>Chat-Learning</h3>
-            <a href="https://github.com/aliChavoshi/Chat-Learning" target="_blank" rel="noopener" class="project__link">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.5c.5.1.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.15-1.1-1.46-1.1-1.46-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.9.83.09-.65.35-1.08.63-1.33-2.22-.25-4.56-1.11-4.56-4.95 0-1.1.39-2 1.03-2.7-.1-.25-.45-1.28.1-2.66 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.3 2.75-1.02 2.75-1.02.55 1.38.2 2.41.1 2.66.64.7 1.03 1.6 1.03 2.7 0 3.85-2.34 4.7-4.57 4.94.36.32.68.94.68 1.9v2.82c0 .27.18.59.69.48A10 10 0 0 0 12 2z"/></svg>
-              <span>مشاهده در GitHub</span>
-            </a>
-          </div>
-          <div class="tech-badges" dir="ltr">
-            <span class="tech-badge">Angular 16</span>
-            <span class="tech-badge">ASP.NET Core Web API 6</span>
-          </div>
-          <p class="prose prose--tight">
-            پیاده‌سازی چت‌روم آنلاین به‌صورت آموزشی با استفاده از Angular و ASP.NET Core.
-          </p>
-        </article>
-
-      </div>
-    </section>
-
-    <!-- EDUCATION & TECH -->
-    <div class="two-col">
-      <section class="block reveal" id="education">
+      <!-- ABOUT -->
+      <section class="block reveal" id="about">
         <h2 class="block__title">
-          <span class="block__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 1 8l11 5 9-4.1V17h2V8L12 3zM5 12.2v3.6c0 1.7 3.1 4.2 7 4.2s7-2.5 7-4.2v-3.6l-7 3.2-7-3.2z"/></svg></span>
-          <span>سوابق تحصیلی</span>
+          <span class="block__icon" aria-hidden="true"><svg viewBox="0 0 24 24">
+              <path
+                d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-4.4 0-8 2.2-8 5v1a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-1c0-2.8-3.6-5-8-5z" />
+            </svg></span>
+          <span data-fa="درباره من">About Me</span>
         </h2>
-        <div class="edu-item">
-          <h3>کارشناسی مهندسی برق – مخابرات</h3>
-          <p class="muted-text">دانشگاه آزاد کاشان · معدل ۱۸ · فارغ‌التحصیل ۱۳۹۴</p>
+        <p class="about-text"
+          data-fa="توسعه‌دهنده ارشد و معمار نرم‌افزار با بیش از &lt;strong&gt;۹ سال تجربه&lt;/strong&gt; در طراحی و توسعه سیستم‌های سازمانی، ERP، تجارت الکترونیک و سامانه‌های صنعتی مبتنی بر وب. متخصص در &lt;strong&gt;ASP.NET Core&lt;/strong&gt;، &lt;strong&gt;#C&lt;/strong&gt;، &lt;strong&gt;Angular&lt;/strong&gt; و معماری میکروسرویس با تمرکز بر ساخت راهکارهای مقیاس‌پذیر، پایدار و قابل نگهداری. تجربه عملی در پیاده‌سازی سامانه‌های ردیابی تولید، کنترل کیفیت، مانیتورینگ خطوط تولید، مدیریت زنجیره تأمین، انبارداری و برنامه‌ریزی تولید دارم و در طراحی راهکارها از اصولی مانند &lt;strong&gt;Clean Architecture&lt;/strong&gt;، &lt;strong&gt;CQRS&lt;/strong&gt;، &lt;strong&gt;Design Patterns&lt;/strong&gt; و کدنویسی تمیز استفاده می‌کنم. همچنین در کنار فعالیت حرفه‌ای، با آموزش تخصصی به بیش از &lt;strong&gt;۲۰۰۰ دانشجو&lt;/strong&gt;، به انتقال تجربه و رشد جامعه توسعه‌دهندگان کمک کرده‌ام.">
+          Senior developer and software architect with <strong>9+ years of experience</strong> designing and building
+          enterprise systems, ERP platforms, e-commerce solutions, and web-based industrial software. Specialized in
+          <strong>ASP.NET Core</strong>, <strong>C#</strong>, and <strong>Angular</strong>, with a focus on scalable,
+          reliable, and maintainable microservice architecture. I have hands-on experience building production
+          traceability systems, quality control platforms, production-line monitoring, supply chain management,
+          warehousing, and production planning — designed around <strong>Clean Architecture</strong>,
+          <strong>CQRS</strong>, and modern design patterns. Alongside my professional work, I've taught <strong>2,000+
+            students</strong> through specialized courses, helping grow the developer community.
+        </p>
+      </section>
+
+      <!-- SKILLS -->
+      <section class="block reveal" id="skills">
+        <h2 class="block__title">
+          <span class="block__icon" aria-hidden="true"><svg viewBox="0 0 24 24">
+              <path d="M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+            </svg></span>
+          <span data-fa="مهارت‌ها">Skills</span>
+        </h2>
+        <ul class="check-list">
+          <li data-fa="توسعه ارشد Full-Stack با تمرکز بر ASP.NET Core، #C، Web API و Angular.">Senior full-stack
+            development focused on ASP.NET Core, C#, Web API, and Angular.</li>
+          <li data-fa="طراحی معماری نرم‌افزارها با استفاده از Clean Architecture، CQRS و Design Patterns.">Software
+            architecture design using Clean Architecture, CQRS, and design patterns.</li>
+          <li
+            data-fa="طراحی و پیاده‌سازی سیستم‌های میکروسرویسی با فناوری‌هایی مانند Docker، Kubernetes، RabbitMQ و gRPC.">
+            Designing and building microservice systems with Docker, Kubernetes, RabbitMQ, and gRPC.</li>
+          <li
+            data-fa="توسعه سیستم‌های سازمانی، ERP و صنعتی در حوزه‌های تولید، زنجیره تأمین، ردیابی محصول، کنترل کیفیت و مانیتورینگ خطوط تولید.">
+            Building enterprise, ERP, and industrial systems for production, supply chain, product traceability, quality
+            control, and production-line monitoring.</li>
+          <li data-fa="تحلیل نیازمندی، حل مسئله، رهبری فنی و انتقال دانش با سابقه آموزش تخصصی به بیش از ۲۰۰۰ دانشجو.">
+            Requirements analysis, problem-solving, technical leadership, and knowledge transfer — backed by experience
+            teaching 2,000+ students.</li>
+        </ul>
+
+        <h3 class="block__subtitle" data-fa="مهارت‌های نرم">Soft Skills</h3>
+        <div class="badge-list">
+          <span class="badge"><i></i><span data-fa="مسئولیت‌پذیری">Accountability</span></span>
+          <span class="badge"><i></i><span data-fa="مدیریت تیم">Team Management</span></span>
+          <span class="badge"><i></i><span data-fa="رقابت‌جویی">Competitive Drive</span></span>
+          <span class="badge"><i></i><span data-fa="گزارش‌نویسی">Reporting</span></span>
+          <span class="badge"><i></i><span data-fa="مدیریت زمان و برنامه‌ریزی">Time Management &amp;
+              Planning</span></span>
+          <span class="badge"><i></i><span data-fa="مهارت حل مسئله">Problem Solving</span></span>
         </div>
       </section>
 
-      <section class="block reveal" id="tech">
+      <!-- EXPERIENCE -->
+      <section class="block reveal" id="experience">
         <h2 class="block__title">
-          <span class="block__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9.4 16.6 4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0L19.2 12l-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg></span>
-          <span>تکنولوژی‌های آشنا</span>
+          <span class="block__icon" aria-hidden="true"><svg viewBox="0 0 24 24">
+              <path
+                d="M9 3a1 1 0 0 0-1 1v1H4a2 2 0 0 0-2 2v3h20V7a2 2 0 0 0-2-2h-4V4a1 1 0 0 0-1-1H9zm1 2h4V5h-4v0zM2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6H2z" />
+            </svg></span>
+          <span data-fa="سوابق کاری">Experience</span>
         </h2>
-        <ul class="tech-cat-list">
+
+        <div class="timeline">
+          <article class="timeline__entry">
+            <div class="timeline__dot timeline__dot--live" title="In progress" data-fa-title="در حال انجام"></div>
+            <div class="timeline__body">
+              <div class="timeline__header">
+                <h3 data-fa="پروژه ردیابی محصول و کنترل کیفی از تولید تا ارسال">Product Traceability &amp; Quality
+                  Control System — Production to Shipment</h3>
+                <span class="status-chip status-chip--live"><i></i><span data-fa="در حال انجام">In
+                    Progress</span></span>
+              </div>
+              <p class="timeline__meta" data-fa="۱۳۹۷ – تاکنون">2018 – Present</p>
+              <ul class="dash-list">
+                <li data-fa="طراحی و پیاده‌سازی سیستم Traceability کامل محصول از تولید تا انبار.">Designed and built a
+                  complete product traceability system, from production to warehouse.</li>
+                <li data-fa="توسعه ماژول اعتبارسنجی بارکد جهت جلوگیری از صدور و ارسال بارکد تکراری یا اشتباه.">Developed
+                  a barcode validation module to prevent duplicate or incorrect barcodes from being issued or shipped.
+                </li>
+                <li data-fa="ایجاد سیستم مانیتورینگ کنترل کیفی (QC) شامل ثبت جزئیات تست و اپراتور مسئول.">Built a
+                  quality control (QC) monitoring system, including test detail logging and operator tracking.</li>
+                <li data-fa="توسعه داشبورد انبارداری لحظه‌ای (مبتنی بر تبلت) برای مدیریت موجودی و ارسال.">Developed a
+                  real-time, tablet-based warehouse dashboard for inventory and shipment management.</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="timeline__entry">
+            <div class="timeline__dot timeline__dot--live" title="In progress" data-fa-title="در حال انجام"></div>
+            <div class="timeline__body">
+              <div class="timeline__header">
+                <h3 data-fa="پروژه ERP/Monitoring — شرکت ایسکرا اتوالکتریک ایران">ERP / Monitoring Project — Iskra Auto
+                  Electric Iran</h3>
+                <span class="status-chip status-chip--live"><i></i><span data-fa="در حال انجام">In
+                    Progress</span></span>
+              </div>
+              <p class="timeline__meta" data-fa="۱۳۹۷ – تاکنون">2018 – Present</p>
+              <ul class="dash-list dash-list--two-col">
+                <li data-fa="پیاده‌سازی سیستم مانیتورینگ خطوط تولید جهت شفاف‌سازی آمار تولید، توقفات و ضایعات.">Built a
+                  production-line monitoring system to provide clear visibility into output, downtime, and waste.</li>
+                <li data-fa="توسعه سیستم Andon برای مشاهده آنلاین توقفات و ارسال خودکار پیامک‌های هشدار.">Developed an
+                  Andon system for real-time downtime tracking and automated SMS alerts.</li>
+                <li data-fa="ثبت و تحلیل آمار تولید با قابلیت مقایسه عملکرد ایستگاه‌ها برای بهبود بهره‌وری.">Recorded
+                  and analyzed production data with station-to-station performance comparison to improve efficiency.
+                </li>
+                <li data-fa="ایجاد سیستم مدیریت ضایعات و خرابی با تفکیک دقیق داده‌ها و تعیین میزان مجاز خطا.">Built a
+                  waste and defect management system with precise data segmentation and allowable error thresholds.</li>
+                <li data-fa="پیاده‌سازی FMEA برای پیشگیری و مدیریت خطاها در فرآیندهای تولید.">Implemented FMEA for error
+                  prevention and management across production processes.</li>
+                <li data-fa="نمایش فیلم آموزشی برای اپراتورها از طریق تبلت در هر ایستگاه جهت بهبود مهارت‌های عملیاتی.">
+                  Delivered training videos to operators via tablet at each station to improve operational skills.</li>
+                <li data-fa="پایش لحظه‌ای موجودی ایستگاه‌ها و بهینه‌سازی برنامه‌ریزی تولید برای افزایش بهره‌وری.">
+                  Monitored station inventory in real time and optimized production planning to boost efficiency.</li>
+                <li data-fa="محاسبه خودکار تعداد ضرب قالب‌ها و تخمین عمر مفید آن‌ها برای کاهش هزینه‌های نگهداری.">
+                  Automated mold-strike counting and lifespan estimation to reduce maintenance costs.</li>
+                <li data-fa="بهبود مدیریت دپو و برنامه‌ریزی خطوط تولید از طریق نظارت لحظه‌ای بر موجودی هر ایستگاه.">
+                  Improved depot management and production-line planning through real-time monitoring of station
+                  inventory.</li>
+                <li data-fa="محاسبه پاداش اپراتورها بر اساس وضعیت کارکرد و راندمان در هر ماه.">Calculated monthly
+                  operator bonuses based on performance and efficiency.</li>
+                <li data-fa="ارائه گزارش عملکرد کامل هر اپراتور در صورت نیاز.">Provided full operator performance
+                  reports on request.</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="timeline__entry">
+            <div class="timeline__dot timeline__dot--live" title="In progress" data-fa-title="در حال انجام"></div>
+            <div class="timeline__body">
+              <div class="timeline__header">
+                <h3><span data-fa="ساخت ERP سفارشی برای شرکت یکتا فولاد مهراد کویر">Custom ERP for Yekta Foolad Mehrad
+                    Kavir Steel Co.</span>
+                  <a href="https://mehradkavir.com/" target="_blank" rel="noopener"
+                    class="inline-link">Mehradkavir.com</a>
+                </h3>
+                <span class="status-chip status-chip--live"><i></i><span data-fa="در حال انجام">In
+                    Progress</span></span>
+              </div>
+              <p class="timeline__meta" data-fa="توسعه‌دهنده وب فریلنس">Freelance Web Developer</p>
+              <p class="prose"
+                data-fa="در پروژه سامانه اختصاصی مهراد کویر، نقش مؤثری در طراحی و توسعه راهکاری یکپارچه برای مدیریت زنجیره تأمین و فرآیندهای سازمانی داشته‌ام. این سامانه بخش‌هایی مانند تولید و برنامه‌ریزی، انبارداری، امور بازرگانی، فروشگاه، مدیریت ارتباط با مشتریان و تأمین‌کنندگان را پوشش می‌دهد و با هدف افزایش شفافیت عملیاتی، کاهش هزینه‌های لجستیکی و بهینه‌سازی جریان اطلاعات، مواد و کالا پیاده‌سازی شده است. این پروژه شامل پنل فروشگاهی، پنل ادمین و وب‌سایت معرفی شرکت می‌باشد.">
+                Played a key role in designing and building an integrated solution for supply chain and business process
+                management on the custom Mehrad Kavir platform. The system covers production planning, warehousing,
+                procurement, an online store, and customer/supplier relationship management — built to increase
+                operational transparency, cut logistics costs, and streamline the flow of information, materials, and
+                goods. The project includes a storefront panel, an admin panel, and the company's public website.
+              </p>
+            </div>
+          </article>
+
+          <article class="timeline__entry">
+            <div class="timeline__dot timeline__dot--done" title="Completed" data-fa-title="تکمیل‌شده"></div>
+            <div class="timeline__body">
+              <div class="timeline__header">
+                <h3>Insanustu Company <span class="muted-text" data-fa="— توسعه‌دهنده آزاد Angular">— Freelance Angular
+                    Developer</span></h3>
+                <span class="status-chip status-chip--done"><i></i><span data-fa="تکمیل‌شده">Completed</span></span>
+              </div>
+              <p class="timeline__meta" data-fa="۱۴۰۱ – ۱۴۰۲">2022 – 2023</p>
+              <p class="prose"
+                data-fa="همکاری به‌عنوان Freelance Angular Developer با شرکت نرم‌افزاری Insanustu مستقر در ترکیه، به‌صورت ریموت به مدت یک سال. در این همکاری، در توسعه، بهینه‌سازی و نگهداری پروژه‌های مبتنی بر Angular نقش مؤثری داشته و با تمرکز بر بهبود کیفیت کد، ساختار فرانت‌اند و تجربه کاربری، در پیشبرد پروژه‌های نرم‌افزاری مشارکت کرده‌ام.">
+                Worked remotely as a freelance Angular developer with Insanustu, a software company based in Turkey, for
+                one year. Contributed to the development, optimization, and maintenance of Angular-based projects, with
+                a focus on improving code quality, frontend architecture, and user experience.
+              </p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- TEACHING -->
+      <section class="block reveal" id="teaching">
+        <h2 class="block__title">
+          <span class="block__icon" aria-hidden="true"><svg viewBox="0 0 24 24">
+              <path
+                d="M12 3 1 8l11 5 9-4.1V17h2V8L12 3zM5 12.2v3.6c0 1.7 3.1 4.2 7 4.2s7-2.5 7-4.2v-3.6l-7 3.2-7-3.2z" />
+            </svg></span>
+          <span data-fa="مدرس و مشاور">Instructor &amp; Consultant</span>
+        </h2>
+
+        <p class="prose"
+          data-fa="در کنار فعالیت حرفه‌ای در توسعه و معماری نرم‌افزار، به آموزش و انتقال تجربه نیز توجه ویژه‌ای دارم. تاکنون با انتشار دوره‌های تخصصی در زمینه توسعه وب، ASP.NET Core، Angular، Docker و معماری میکروسرویس در سایت &lt;strong&gt;دانشجویار&lt;/strong&gt;، به بیش از &lt;strong&gt;۲۰۰۰ دانشجو&lt;/strong&gt; آموزش داده‌ام و در سال ۱۴۰۰ عنوان &lt;strong&gt;بهترین مدرس دانشجویار&lt;/strong&gt; را کسب کرده‌ام.">
+          Alongside my professional work in software development and architecture, I place a strong emphasis on teaching
+          and sharing experience. I've published specialized courses on web development, ASP.NET Core, Angular, Docker,
+          and microservice architecture on <strong>Daneshjooyar</strong>, teaching <strong>2,000+ students</strong>, and
+          was recognized as <strong>Daneshjooyar's Best Instructor</strong> in 2021.
+        </p>
+
+        <ul class="course-list">
           <li>
-            <span class="tech-cat-list__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4h16v2H4V4zm0 14h16v2H4v-2zM4 9h10v2H4V9zm0 5h13v2H4v-2z"/></svg></span>
-            <div><strong>فرانت‌اند</strong><span>HTML، CSS، JavaScript، jQuery، TypeScript، Bootstrap</span></div>
+            <a href="https://www.daneshjooyar.com/microservice/" target="_blank" rel="noopener">
+              <span class="course-list__icon" aria-hidden="true"><svg viewBox="0 0 24 24">
+                  <path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z" />
+                </svg></span>
+              <span class="course-list__text"
+                data-fa="دوره پیاده‌سازی پروژه فروشگاهی با میکروسرویس‌های ASP.NET Core و Angular">Building a Store
+                Project with ASP.NET Core &amp; Angular Microservices</span>
+              <span class="course-list__arrow" aria-hidden="true">›</span>
+            </a>
           </li>
           <li>
-            <span class="tech-cat-list__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></span>
-            <div><strong>فریمورک فرانت‌اند</strong><span>Angular، Ionic، Angular Material، Prime NG</span></div>
+            <a href="https://www.daneshjooyar.com/docker/" target="_blank" rel="noopener">
+              <span class="course-list__icon" aria-hidden="true"><svg viewBox="0 0 24 24">
+                  <path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z" />
+                </svg></span>
+              <span class="course-list__text" data-fa="آموزش صفر تا صد Docker">Docker, Zero to Hero</span>
+              <span class="course-list__arrow" aria-hidden="true">›</span>
+            </a>
           </li>
           <li>
-            <span class="tech-cat-list__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4h16a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zm1 4v2h14V8H5zm0 4v2h9v-2H5z"/></svg></span>
-            <div><strong>بک‌اند</strong><span>#C، ASP.NET Core، ASP.NET Core MVC، Web API</span></div>
+            <a href="https://www.daneshjooyar.com/asp-net-core-and-angular-chat-room/" target="_blank" rel="noopener">
+              <span class="course-list__icon" aria-hidden="true"><svg viewBox="0 0 24 24">
+                  <path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z" />
+                </svg></span>
+              <span class="course-list__text" data-fa="آموزش صفر تا صد چت‌روم آنلاین (Angular - #C)">Building a
+                Real-Time Chat Room (Angular &amp; C#)</span>
+              <span class="course-list__arrow" aria-hidden="true">›</span>
+            </a>
           </li>
           <li>
-            <span class="tech-cat-list__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3c-4.4 0-8 1.1-8 2.5v13C4 19.9 7.6 21 12 21s8-1.1 8-2.5v-13C20 4.1 16.4 3 12 3zm0 2c3.6 0 6 .9 6 1.5S15.6 8 12 8s-6-.9-6-1.5S8.4 5 12 5z"/></svg></span>
-            <div><strong>پایگاه داده</strong><span>SQL Server، PostgreSQL، MongoDB، Redis</span></div>
+            <a href="https://www.daneshjooyar.com/%D9%88%D8%A8-%D8%B3%D8%A7%DB%8C%D8%AA-%D9%81%D8%B1%D9%88%D8%B4%DA%AF%D8%A7%D9%87%DB%8C-%D9%85%D8%B4%D8%A7%D8%A8%D9%87-%D8%AF%DB%8C%D8%AC%DB%8C-%DA%A9%D8%A7%D9%84%D8%A7/"
+              target="_blank" rel="noopener">
+              <span class="course-list__icon" aria-hidden="true"><svg viewBox="0 0 24 24">
+                  <path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z" />
+                </svg></span>
+              <span class="course-list__text" data-fa="آموزش صفر تا صد ساخت یک وب‌سایت فروشگاهی (Angular - #C)">Building
+                an Online Store from Scratch (Angular &amp; C#)</span>
+              <span class="course-list__arrow" aria-hidden="true">›</span>
+            </a>
           </li>
           <li>
-            <span class="tech-cat-list__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2 3 6v6c0 5 3.8 9.4 9 10 5.2-.6 9-5 9-10V6l-9-4z"/></svg></span>
-            <div><strong>ابزارها</strong><span>Git، GitHub، Docker، Kubernetes، Identity Server 4، Ocelot، Nginx، Azure</span></div>
+            <a href="https://www.daneshjooyar.com/%D8%AF%D9%88%D8%B1%D9%87-%D8%AC%D8%A7%D9%85%D8%B9-%D8%A2%D9%85%D9%88%D8%B2%D8%B4-%D8%A7%D9%86%DA%AF%D9%88%D9%84%D8%A7%D8%B1-angular-12-%D8%A8%D9%87-%D8%B5%D9%88%D8%B1%D8%AA-%D9%BE%D8%B1%D9%88%DA%98/"
+              target="_blank" rel="noopener">
+              <span class="course-list__icon" aria-hidden="true"><svg viewBox="0 0 24 24">
+                  <path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z" />
+                </svg></span>
+              <span class="course-list__text" data-fa="آموزش صفر تا صد آنگولار (Angular)">Angular, Zero to Hero</span>
+              <span class="course-list__arrow" aria-hidden="true">›</span>
+            </a>
+          </li>
+          <li>
+            <a href="https://www.daneshjooyar.com/asp-net-core-training/" target="_blank" rel="noopener">
+              <span class="course-list__icon" aria-hidden="true"><svg viewBox="0 0 24 24">
+                  <path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z" />
+                </svg></span>
+              <span class="course-list__text" data-fa="آموزش صفر تا صد ASP.NET Core">ASP.NET Core, Zero to Hero</span>
+              <span class="course-list__arrow" aria-hidden="true">›</span>
+            </a>
           </li>
         </ul>
+
+        <a href="https://www.daneshjooyar.com/teacher/alichavoshi" target="_blank" rel="noopener" class="btn-teacher">
+          <span data-fa="مشاهده پروفایل مدرس در دانشجویار">View Instructor Profile on Daneshjooyar</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M10 6 8.6 7.4 13.2 12l-4.6 4.6L10 18l6-6z" />
+          </svg>
+        </a>
       </section>
-    </div>
 
-  </main>
-</div>
+      <!-- OPEN SOURCE PROJECTS -->
+      <section class="block reveal" id="projects">
+        <h2 class="block__title">
+          <span class="block__icon" aria-hidden="true"><svg viewBox="0 0 24 24">
+              <path
+                d="M12 2a10 10 0 0 0-3.16 19.5c.5.1.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.15-1.1-1.46-1.1-1.46-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.9.83.09-.65.35-1.08.63-1.33-2.22-.25-4.56-1.11-4.56-4.95 0-1.1.39-2 1.03-2.7-.1-.25-.45-1.28.1-2.66 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.3 2.75-1.02 2.75-1.02.55 1.38.2 2.41.1 2.66.64.7 1.03 1.6 1.03 2.7 0 3.85-2.34 4.7-4.57 4.94.36.32.68.94.68 1.9v2.82c0 .27.18.59.69.48A10 10 0 0 0 12 2z" />
+            </svg></span>
+          <span data-fa="پروژه‌های متن‌باز">Open-Source Projects</span>
+        </h2>
 
-<footer class="footer">
-  <p>© <span id="year"></span> علی چاوشی — همه حقوق محفوظ است.</p>
-</footer>
+        <div class="project-grid">
 
-<script src="script.js"></script>
+          <article class="project">
+            <div class="project__head">
+              <h3>Ecommerce-Microservice</h3>
+              <a href="https://github.com/aliChavoshi/Ecommerce-Microservice" target="_blank" rel="noopener"
+                class="project__link">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M12 2a10 10 0 0 0-3.16 19.5c.5.1.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.15-1.1-1.46-1.1-1.46-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.9.83.09-.65.35-1.08.63-1.33-2.22-.25-4.56-1.11-4.56-4.95 0-1.1.39-2 1.03-2.7-.1-.25-.45-1.28.1-2.66 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.3 2.75-1.02 2.75-1.02.55 1.38.2 2.41.1 2.66.64.7 1.03 1.6 1.03 2.7 0 3.85-2.34 4.7-4.57 4.94.36.32.68.94.68 1.9v2.82c0 .27.18.59.69.48A10 10 0 0 0 12 2z" />
+                </svg>
+                <span data-fa="مشاهده در GitHub">View on GitHub</span>
+              </a>
+            </div>
+            <div class="tech-badges" dir="ltr">
+              <span class="tech-badge">ASP.NET Core Web API 9</span>
+              <span class="tech-badge">Angular 20</span>
+              <span class="tech-badge">Docker</span>
+              <span class="tech-badge">Kubernetes</span>
+            </div>
+            <ul class="dot-list">
+              <li data-fa="پیاده‌سازی فروشگاه اینترنتی مبتنی بر معماری Microservices">Online store built on microservice
+                architecture</li>
+              <li data-fa="استفاده از Docker و Kubernetes برای استقرار و مقیاس‌دهی سرویس‌ها">Docker and Kubernetes for
+                deployment and service scaling</li>
+              <li data-fa="RabbitMQ و gRPC برای ارتباط و پیام‌رسانی بین سرویس‌ها">RabbitMQ and gRPC for inter-service
+                communication and messaging</li>
+              <li data-fa="Identity Server برای احراز هویت و مدیریت کاربران">Identity Server for authentication and user
+                management</li>
+              <li data-fa="استفاده از SQL Server، MongoDB، PostgreSQL و Redis برای مدیریت داده‌ها">SQL Server, MongoDB,
+                PostgreSQL, and Redis for data management</li>
+              <li data-fa="Ocelot و Nginx به عنوان API Gateway و Reverse Proxy">Ocelot and Nginx as API Gateway and
+                reverse proxy</li>
+            </ul>
+          </article>
+
+          <article class="project">
+            <div class="project__head">
+              <h3>HelpDeskSystem</h3>
+              <a href="https://github.com/aliChavoshi/HelpDeskSystem" target="_blank" rel="noopener"
+                class="project__link">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M12 2a10 10 0 0 0-3.16 19.5c.5.1.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.15-1.1-1.46-1.1-1.46-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.9.83.09-.65.35-1.08.63-1.33-2.22-.25-4.56-1.11-4.56-4.95 0-1.1.39-2 1.03-2.7-.1-.25-.45-1.28.1-2.66 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.3 2.75-1.02 2.75-1.02.55 1.38.2 2.41.1 2.66.64.7 1.03 1.6 1.03 2.7 0 3.85-2.34 4.7-4.57 4.94.36.32.68.94.68 1.9v2.82c0 .27.18.59.69.48A10 10 0 0 0 12 2z" />
+                </svg>
+                <span data-fa="مشاهده در GitHub">View on GitHub</span>
+              </a>
+            </div>
+            <div class="tech-badges" dir="ltr">
+              <span class="tech-badge">ASP.NET Core 8</span>
+              <span class="tech-badge">EF Core</span>
+              <span class="tech-badge">SQL Server</span>
+            </div>
+            <ul class="dot-list">
+              <li data-fa="پیاده‌سازی سیستم تیکتینگ و پشتیبانی آنلاین کاربران">Online ticketing and user support system
+              </li>
+              <li data-fa="طراحی شده بر اساس Clean Architecture و اصول SOLID">Built on Clean Architecture and SOLID
+                principles</li>
+              <li data-fa="مدیریت کاربران، نقش‌ها و سطح دسترسی‌ها">User, role, and access-level management</li>
+              <li data-fa="استفاده از Repository Pattern و Dependency Injection">Repository Pattern and Dependency
+                Injection</li>
+              <li data-fa="لاگ‌گیری پیشرفته با Serilog و مستندسازی API با Swagger">Advanced logging with Serilog and API
+                docs with Swagger</li>
+              <li data-fa="پشتیبانی از Docker برای اجرای آسان پروژه">Docker support for easy project setup</li>
+            </ul>
+          </article>
+
+          <article class="project">
+            <div class="project__head">
+              <h3>EduShopBackend</h3>
+              <a href="https://github.com/aliChavoshi/EduShopBackend" target="_blank" rel="noopener"
+                class="project__link">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M12 2a10 10 0 0 0-3.16 19.5c.5.1.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.15-1.1-1.46-1.1-1.46-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.9.83.09-.65.35-1.08.63-1.33-2.22-.25-4.56-1.11-4.56-4.95 0-1.1.39-2 1.03-2.7-.1-.25-.45-1.28.1-2.66 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.3 2.75-1.02 2.75-1.02.55 1.38.2 2.41.1 2.66.64.7 1.03 1.6 1.03 2.7 0 3.85-2.34 4.7-4.57 4.94.36.32.68.94.68 1.9v2.82c0 .27.18.59.69.48A10 10 0 0 0 12 2z" />
+                </svg>
+                <span data-fa="مشاهده در GitHub">View on GitHub</span>
+              </a>
+            </div>
+            <div class="tech-badges" dir="ltr">
+              <span class="tech-badge">ASP.NET Core Web API 8</span>
+              <span class="tech-badge">Clean Architecture</span>
+              <span class="tech-badge">CQRS</span>
+            </div>
+            <ul class="dot-list">
+              <li data-fa="Backend فروشگاه اینترنتی با معماری Clean Architecture">E-commerce backend built with Clean
+                Architecture</li>
+              <li data-fa="استفاده از CQRS برای مدیریت درخواست‌ها و افزایش خوانایی کد">CQRS for request handling and
+                improved code readability</li>
+              <li data-fa="احراز هویت کاربران با JWT Authentication">JWT-based user authentication</li>
+              <li data-fa="Repository Pattern، Unit Of Work و Fluent Validation">Repository Pattern, Unit of Work, and
+                Fluent Validation</li>
+              <li data-fa="Redis برای Cache و افزایش Performance سیستم">Redis for caching and improved system
+                performance</li>
+              <li data-fa="Docker Compose، Unit Testing و GitHub Actions برای CI/CD">Docker Compose, unit testing, and
+                GitHub Actions for CI/CD</li>
+            </ul>
+          </article>
+
+          <article class="project">
+            <div class="project__head">
+              <h3>EduShopClient</h3>
+              <a href="https://github.com/aliChavoshi/EduShopClient" target="_blank" rel="noopener"
+                class="project__link">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M12 2a10 10 0 0 0-3.16 19.5c.5.1.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.15-1.1-1.46-1.1-1.46-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.9.83.09-.65.35-1.08.63-1.33-2.22-.25-4.56-1.11-4.56-4.95 0-1.1.39-2 1.03-2.7-.1-.25-.45-1.28.1-2.66 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.3 2.75-1.02 2.75-1.02.55 1.38.2 2.41.1 2.66.64.7 1.03 1.6 1.03 2.7 0 3.85-2.34 4.7-4.57 4.94.36.32.68.94.68 1.9v2.82c0 .27.18.59.69.48A10 10 0 0 0 12 2z" />
+                </svg>
+                <span data-fa="مشاهده در GitHub">View on GitHub</span>
+              </a>
+            </div>
+            <div class="tech-badges" dir="ltr">
+              <span class="tech-badge">Angular 14</span>
+              <span class="tech-badge">Angular Material</span>
+              <span class="tech-badge">RxJS</span>
+            </div>
+            <ul class="dot-list">
+              <li data-fa="Frontend فروشگاه اینترنتی توسعه داده شده با Angular">E-commerce frontend built with Angular
+              </li>
+              <li data-fa="استفاده از Angular Material برای طراحی رابط کاربری">Angular Material for UI design</li>
+              <li data-fa="پیاده‌سازی سبد خرید، سفارشات، علاقه‌مندی‌ها و پرداخت آنلاین">Cart, orders, wishlist, and
+                online checkout</li>
+              <li data-fa="مدیریت کاربران با JWT Authentication">User management with JWT authentication</li>
+              <li data-fa="استفاده از Routing، Lazy Loading و RxJS برای بهینه‌سازی عملکرد">Routing, lazy loading, and
+                RxJS for performance optimization</li>
+            </ul>
+          </article>
+
+          <article class="project">
+            <div class="project__head">
+              <h3>Chat-Learning</h3>
+              <a href="https://github.com/aliChavoshi/Chat-Learning" target="_blank" rel="noopener"
+                class="project__link">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M12 2a10 10 0 0 0-3.16 19.5c.5.1.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.15-1.1-1.46-1.1-1.46-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.9.83.09-.65.35-1.08.63-1.33-2.22-.25-4.56-1.11-4.56-4.95 0-1.1.39-2 1.03-2.7-.1-.25-.45-1.28.1-2.66 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.3 2.75-1.02 2.75-1.02.55 1.38.2 2.41.1 2.66.64.7 1.03 1.6 1.03 2.7 0 3.85-2.34 4.7-4.57 4.94.36.32.68.94.68 1.9v2.82c0 .27.18.59.69.48A10 10 0 0 0 12 2z" />
+                </svg>
+                <span data-fa="مشاهده در GitHub">View on GitHub</span>
+              </a>
+            </div>
+            <div class="tech-badges" dir="ltr">
+              <span class="tech-badge">Angular 16</span>
+              <span class="tech-badge">ASP.NET Core Web API 6</span>
+            </div>
+            <p class="prose prose--tight"
+              data-fa="پیاده‌سازی چت‌روم آنلاین به‌صورت آموزشی با استفاده از Angular و ASP.NET Core.">
+              An educational real-time chat room built with Angular and ASP.NET Core.
+            </p>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- EDUCATION & TECH -->
+      <div class="two-col">
+        <section class="block reveal" id="education">
+          <h2 class="block__title">
+            <span class="block__icon" aria-hidden="true"><svg viewBox="0 0 24 24">
+                <path
+                  d="M12 3 1 8l11 5 9-4.1V17h2V8L12 3zM5 12.2v3.6c0 1.7 3.1 4.2 7 4.2s7-2.5 7-4.2v-3.6l-7 3.2-7-3.2z" />
+              </svg></span>
+            <span data-fa="سوابق تحصیلی">Education</span>
+          </h2>
+          <div class="edu-item">
+            <h3 data-fa="کارشناسی مهندسی برق – مخابرات">B.Sc. in Electrical Engineering – Telecommunications</h3>
+            <p class="muted-text" data-fa="دانشگاه آزاد کاشان · معدل ۱۸ · فارغ‌التحصیل ۱۳۹۴">Azad University of Kashan ·
+              GPA 18/20 · Graduated 2015</p>
+          </div>
+        </section>
+
+        <section class="block reveal" id="tech">
+          <h2 class="block__title">
+            <span class="block__icon" aria-hidden="true"><svg viewBox="0 0 24 24">
+                <path d="M9.4 16.6 4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0L19.2 12l-4.6-4.6L16 6l6 6-6 6-1.4-1.4z" />
+              </svg></span>
+            <span data-fa="تکنولوژی‌های آشنا">Familiar Technologies</span>
+          </h2>
+          <ul class="tech-cat-list">
+            <li>
+              <span class="tech-cat-list__icon" aria-hidden="true"><svg viewBox="0 0 24 24">
+                  <path d="M4 4h16v2H4V4zm0 14h16v2H4v-2zM4 9h10v2H4V9zm0 5h13v2H4v-2z" />
+                </svg></span>
+              <div><strong data-fa="فرانت‌اند">Frontend</strong><span
+                  data-fa="HTML، CSS، JavaScript، jQuery، TypeScript، Bootstrap">HTML, CSS, JavaScript, jQuery,
+                  TypeScript, Bootstrap</span></div>
+            </li>
+            <li>
+              <span class="tech-cat-list__icon" aria-hidden="true"><svg viewBox="0 0 24 24">
+                  <path d="M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                </svg></span>
+              <div><strong data-fa="فریمورک فرانت‌اند">Frontend Frameworks</strong><span
+                  data-fa="Angular، Ionic، Angular Material، Prime NG">Angular, Ionic, Angular Material, Prime NG</span>
+              </div>
+            </li>
+            <li>
+              <span class="tech-cat-list__icon" aria-hidden="true"><svg viewBox="0 0 24 24">
+                  <path
+                    d="M4 4h16a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zm1 4v2h14V8H5zm0 4v2h9v-2H5z" />
+                </svg></span>
+              <div><strong data-fa="بک‌اند">Backend</strong><span
+                  data-fa="#C، ASP.NET Core، ASP.NET Core MVC، Web API">C#, ASP.NET Core, ASP.NET Core MVC, Web
+                  API</span></div>
+            </li>
+            <li>
+              <span class="tech-cat-list__icon" aria-hidden="true"><svg viewBox="0 0 24 24">
+                  <path
+                    d="M12 3c-4.4 0-8 1.1-8 2.5v13C4 19.9 7.6 21 12 21s8-1.1 8-2.5v-13C20 4.1 16.4 3 12 3zm0 2c3.6 0 6 .9 6 1.5S15.6 8 12 8s-6-.9-6-1.5S8.4 5 12 5z" />
+                </svg></span>
+              <div><strong data-fa="پایگاه داده">Databases</strong><span
+                  data-fa="SQL Server، PostgreSQL، MongoDB، Redis">SQL Server, PostgreSQL, MongoDB, Redis</span></div>
+            </li>
+            <li>
+              <span class="tech-cat-list__icon" aria-hidden="true"><svg viewBox="0 0 24 24">
+                  <path d="M12 2 3 6v6c0 5 3.8 9.4 9 10 5.2-.6 9-5 9-10V6l-9-4z" />
+                </svg></span>
+              <div><strong data-fa="ابزارها">Tools</strong><span
+                  data-fa="Git، GitHub، Docker، Kubernetes، Identity Server 4، Ocelot، Nginx، Azure">Git, GitHub,
+                  Docker, Kubernetes, Identity Server 4, Ocelot, Nginx, Azure</span></div>
+            </li>
+          </ul>
+        </section>
+      </div>
+
+    </main>
+  </div>
+
+  <footer class="footer">
+    <p>© <span id="year"></span> <span data-fa="علی چاوشی — همه حقوق محفوظ است.">Ali Chavoshi — All rights
+        reserved.</span></p>
+  </footer>
+
+  <script src="script.js"></script>
 </body>
+
 </html>
