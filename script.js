@@ -134,4 +134,91 @@
   revealEls.forEach(function (el) {
     observer.observe(el);
   });
+
+  // ============================================================
+  // CERTIFICATE GALLERY + LIGHTBOX (MODAL)
+  // ============================================================
+  var certCards = Array.prototype.slice.call(document.querySelectorAll(".cert-card"));
+  var lightbox = document.getElementById("certLightbox");
+  var lightboxImg = document.getElementById("certLightboxImg");
+  var lightboxTitle = document.getElementById("certLightboxTitle");
+
+  // Placeholder images (cer-N.jpg that don't exist yet) hide the broken
+  // icon and keep the elegant placeholder visible instead.
+  var certImgs = Array.prototype.slice.call(document.querySelectorAll(".cert-card__thumb img"));
+  certImgs.forEach(function (img) {
+    img.addEventListener("load", function () {
+      img.setAttribute("data-loaded", "true");
+    });
+    img.addEventListener("error", function () {
+      img.style.display = "none";
+    });
+  });
+
+  function setLightboxTitle(card) {
+    if (!lightboxTitle || !card) return;
+    var isFa = currentLang === "fa";
+    var key = isFa ? "data-cert-title-fa" : "data-cert-title-en";
+    lightboxTitle.innerHTML = card.getAttribute(key) || "";
+  }
+
+  function openLightbox(card) {
+    if (!lightbox || !card) return;
+    var src = card.getAttribute("data-cert-img");
+    if (!src) return;
+
+    lightboxImg.setAttribute("src", src);
+    lightboxImg.setAttribute("alt", "");
+    setLightboxTitle(card);
+    lightbox.classList.add("is-open");
+    lightbox.setAttribute("aria-hidden", "false");
+    document.body.classList.add("lightbox-open");
+
+    var closeBtn = lightbox.querySelector("[data-close-lightbox]");
+    if (closeBtn && closeBtn.tagName === "BUTTON") closeBtn.focus();
+  }
+
+  function closeLightbox() {
+    if (!lightbox) return;
+    lightbox.classList.remove("is-open");
+    lightbox.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("lightbox-open");
+    lightboxImg.setAttribute("src", "");
+    // return focus to the card that opened the modal
+    if (lastCard) lastCard.focus();
+  }
+  var lastCard = null;
+
+  if (certCards.length && lightbox) {
+    certCards.forEach(function (card) {
+      function requestOpen(e) {
+        // ignore clicks that are just keyboard-triggered synthetic events
+        if (e && e.type === "keydown" && e.key !== "Enter" && e.key !== " ") return;
+        lastCard = card;
+        openLightbox(card);
+        if (e && e.type === "keydown") e.preventDefault();
+      }
+      card.addEventListener("click", requestOpen);
+      card.addEventListener("keydown", requestOpen);
+    });
+
+    lightbox
+      .querySelectorAll("[data-close-lightbox]")
+      .forEach(function (el) {
+        el.addEventListener("click", closeLightbox);
+      });
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") closeLightbox();
+    });
+  }
+
+  // When the language changes while a modal is open, refresh the title.
+  if (toggleBtn && lightbox) {
+    toggleBtn.addEventListener("click", function () {
+      if (lightbox.classList.contains("is-open") && lastCard) {
+        setLightboxTitle(lastCard);
+      }
+    });
+  }
 })();
