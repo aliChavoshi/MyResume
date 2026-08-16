@@ -13,6 +13,30 @@
   var htmlEl = document.documentElement;
   var toggleBtn = document.getElementById("langToggle");
   var themeToggle = document.getElementById("themeToggle");
+  var titleElement = document.querySelector("title");
+  var resumeSections = Array.prototype.slice.call(document.querySelectorAll("main section[id]"));
+  var activeTitleSection = null;
+  var titleLabels = {
+    about: { en: "About", fa: "درباره من" },
+    skills: { en: "Skills", fa: "مهارت‌ها" },
+    experience: { en: "Experience", fa: "سوابق کاری" },
+    teaching: { en: "Teaching", fa: "آموزش" },
+    projects: { en: "Open-Source Projects", fa: "پروژه‌های متن‌باز" },
+    education: { en: "Education", fa: "سوابق تحصیلی" },
+    tech: { en: "Technologies", fa: "فناوری‌ها" },
+    certificates: { en: "Certificates", fa: "گواهی‌ها" }
+  };
+
+  function updatePageTitle(sectionId) {
+    if (sectionId) activeTitleSection = sectionId;
+    if (!titleElement) return;
+
+    var lang = htmlEl.getAttribute("lang") === "fa" ? "fa" : "en";
+    var label = titleLabels[activeTitleSection];
+    titleElement.textContent = label
+      ? (lang === "fa" ? "علی چاوشی | " : "Ali Chavoshi | ") + label[lang]
+      : (lang === "fa" ? "علی چاوشی | توسعه‌دهنده ارشد" : "Ali Chavoshi | Senior Full-Stack Developer");
+  }
 
   // Elements whose *text content* swaps with data-fa / englishOriginal
   var textSwapEls = Array.prototype.slice.call(document.querySelectorAll("[data-fa]"));
@@ -87,6 +111,8 @@
       themeToggle.setAttribute("title", themeAction);
     }
 
+    updatePageTitle();
+
     try {
       window.localStorage.setItem(STORAGE_KEY, isFa ? "fa" : "en");
     } catch (e) {
@@ -158,6 +184,26 @@
       }
     });
   }
+
+  // Keep the browser-tab title in step with the section a reader is viewing.
+  var titleScrollFrame = null;
+  function setTitleFromScrollPosition() {
+    titleScrollFrame = null;
+    var currentSection = resumeSections[0];
+    resumeSections.forEach(function (section) {
+      if (section.getBoundingClientRect().top <= 180) currentSection = section;
+    });
+    if (currentSection) updatePageTitle(currentSection.id);
+  }
+
+  function requestTitleUpdate() {
+    if (titleScrollFrame !== null) return;
+    titleScrollFrame = window.requestAnimationFrame(setTitleFromScrollPosition);
+  }
+
+  window.addEventListener("scroll", requestTitleUpdate, { passive: true });
+  window.addEventListener("resize", requestTitleUpdate);
+  requestTitleUpdate();
 
   // ============================================================
   // Scroll-reveal: fade + rise each .reveal block into view once.
