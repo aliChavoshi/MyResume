@@ -1,4 +1,139 @@
 /* ============================================================
+   AMBIENT FOG
+   Fixed, decorative green mist behind everything. Each blob sits in
+   its own layer so JS can drive a scroll-linked parallax offset
+   (via translate3d) independently of the blob's own slow ambient
+   drift (a plain CSS keyframe) — the two compose naturally since
+   they're on different elements.
+   ============================================================ */
+.fog {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.fog__layer {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+  transition: transform .1s linear;
+}
+
+.fog__blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: .18;
+  will-change: transform;
+}
+
+.fog__blob--1 {
+  width: 560px;
+  height: 560px;
+  top: -12%;
+  inset-inline-start: -12%;
+  background: radial-gradient(circle at 35% 35%, var(--accent-2), transparent 72%);
+  animation: fog-drift-1 28s ease-in-out infinite;
+}
+
+.fog__blob--2 {
+  width: 620px;
+  height: 620px;
+  top: 34%;
+  inset-inline-end: -16%;
+  background: radial-gradient(circle at 60% 40%, var(--accent), transparent 72%);
+  animation: fog-drift-2 34s ease-in-out infinite;
+}
+
+.fog__blob--3 {
+  width: 460px;
+  height: 460px;
+  bottom: -14%;
+  inset-inline-start: 22%;
+  background: radial-gradient(circle at 50% 50%, var(--accent-2), transparent 72%);
+  animation: fog-drift-3 24s ease-in-out infinite;
+}
+
+html[data-theme="dark"] .fog__blob {
+  opacity: .3;
+}
+
+@keyframes fog-drift-1 {
+
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate(50px, 35px) scale(1.08);
+  }
+}
+
+@keyframes fog-drift-2 {
+
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate(-45px, 50px) scale(1.05);
+  }
+}
+
+@keyframes fog-drift-3 {
+
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate(35px, -40px) scale(1.1);
+  }
+}
+
+@media (max-width:640px) {
+  .fog__blob {
+    filter: blur(70px);
+  }
+
+  .fog__blob--1 {
+    width: 340px;
+    height: 340px;
+  }
+
+  .fog__blob--2 {
+    width: 380px;
+    height: 380px;
+  }
+
+  .fog__blob--3 {
+    width: 300px;
+    height: 300px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fog__blob {
+    animation: none !important;
+  }
+
+  .fog__layer {
+    transition: none !important;
+  }
+}
+
+@media print {
+  .fog {
+    display: none !important;
+  }
+}
+
+/* ============================================================
    TOKENS
    ============================================================ */
 :root {

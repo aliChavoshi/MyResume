@@ -83,6 +83,39 @@
   })();
 
   // ============================================================
+  // AMBIENT FOG — scroll-linked parallax. Each .fog__layer drifts
+  // at its own speed/direction as the page scrolls (mouse wheel,
+  // trackpad, or touch — all fire the same native scroll event).
+  // ============================================================
+  (function fogParallaxModule() {
+    var layers = Array.prototype.slice.call(document.querySelectorAll(".fog__layer"));
+    if (!layers.length) return;
+
+    var reduceMotion = window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) return; // leave the fog static, no parallax
+
+    var ticking = false;
+    function update() {
+      ticking = false;
+      var y = window.pageYOffset;
+      layers.forEach(function (layer) {
+        var speed = parseFloat(layer.getAttribute("data-speed")) || 0;
+        layer.style.transform = "translate3d(0, " + (y * speed) + "px, 0)";
+      });
+    }
+
+    function onFogScroll() {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(update);
+    }
+
+    window.addEventListener("scroll", onFogScroll, { passive: true });
+    update();
+  })();
+
+  // ============================================================
   // LANGUAGE TOGGLE (EN default, LTR / FA, RTL)
   // ============================================================
   var STORAGE_KEY = "site-lang";

@@ -28,6 +28,19 @@
 
 <body>
 
+  <!-- ===== AMBIENT FOG (fixed, decorative, reacts to scroll) ===== -->
+  <div class="fog" aria-hidden="true">
+    <div class="fog__layer" data-speed="0.07">
+      <span class="fog__blob fog__blob--1"></span>
+    </div>
+    <div class="fog__layer" data-speed="-0.05">
+      <span class="fog__blob fog__blob--2"></span>
+    </div>
+    <div class="fog__layer" data-speed="0.1">
+      <span class="fog__blob fog__blob--3"></span>
+    </div>
+  </div>
+
   <!-- ===== TOP NAV: section links + scroll progress ===== -->
   <nav class="topnav" aria-label="Section navigation">
     <div class="topnav__progress" id="scrollProgress" aria-hidden="true"></div>
