@@ -219,8 +219,8 @@ svg {
 .sidebar__role {
   font-family: var(--font-mono);
   font-size: .85rem;
-  color: var(--accent-soft);
-  direction: ltr;
+  color: var(--accent-2);
+  /* direction: ltr; */
   text-align: start;
   margin-bottom: 4px;
   opacity: .85;
@@ -934,11 +934,108 @@ svg {
 }
 
 /* ============================================================
+   TOP NAV: section links + scroll progress
+   ============================================================ */
+:root {
+  --topnav-h: 56px;
+}
+
+.topnav {
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  background: color-mix(in srgb, var(--card) 88%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  height: var(--topnav-h);
+}
+
+.topnav__progress {
+  position: absolute;
+  top: 0;
+  inset-inline-start: 0;
+  height: 2px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  transition: width .1s linear;
+}
+
+.topnav__inner {
+  max-width: var(--max-width);
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.topnav__brand {
+  font-family: var(--font-fa);
+  font-weight: 700;
+  font-size: .92rem;
+  color: var(--ink);
+  flex-shrink: 0;
+}
+
+.topnav__links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  list-style: none;
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.topnav__links::-webkit-scrollbar {
+  display: none;
+}
+
+.topnav__links a {
+  display: inline-block;
+  padding: 7px 12px;
+  border-radius: 100px;
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+  transition: color .2s ease, background-color .2s ease;
+}
+
+.topnav__links a:hover {
+  color: var(--ink);
+  background: var(--accent-soft);
+}
+
+.topnav__links a.is-active {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+@media (max-width:760px) {
+  .topnav__brand {
+    display: none;
+  }
+
+  .topnav__inner {
+    padding: 0 16px;
+  }
+
+  .topnav__links a {
+    padding: 6px 10px;
+    font-size: .8rem;
+  }
+}
+
+/* ============================================================
    THEME + LANGUAGE TOGGLES
    ============================================================ */
 .theme-toggle {
   position: fixed;
-  top: 18px;
+  top: calc(var(--topnav-h) + 14px);
   inset-inline-start: 18px;
   z-index: 100;
   width: 42px;
@@ -962,7 +1059,7 @@ svg {
 
 .download-cv {
   position: fixed;
-  top: 76px;
+  top: calc(var(--topnav-h) + 72px);
   inset-inline-end: 18px;
   z-index: 100;
   display: inline-flex;
@@ -1008,7 +1105,7 @@ html[data-theme="dark"] .theme-toggle__moon {
 }
 .lang-toggle {
   position: fixed;
-  top: 18px;
+  top: calc(var(--topnav-h) + 14px);
   inset-inline-end: 18px;
   z-index: 100;
   display: inline-flex;
@@ -1071,15 +1168,19 @@ html[lang="fa"] .lang-toggle__option[data-lang-option="fa"] {
 }
 
 @media (max-width:640px) {
+  :root {
+    --topnav-h: 50px;
+  }
+
   .theme-toggle {
-    top: 12px;
+    top: calc(var(--topnav-h) + 10px);
     inset-inline-start: 12px;
     width: 38px;
     height: 38px;
   }
 
   .download-cv {
-    top: 62px;
+    top: calc(var(--topnav-h) + 62px);
     inset-inline-end: 12px;
     min-height: 38px;
     padding: 8px 12px;
@@ -1087,7 +1188,7 @@ html[lang="fa"] .lang-toggle__option[data-lang-option="fa"] {
   }
 
   .lang-toggle {
-    top: 12px;
+    top: calc(var(--topnav-h) + 10px);
     inset-inline-end: 12px;
     font-size: .72rem;
   }
@@ -1106,14 +1207,14 @@ html[lang="fa"] .lang-toggle__option[data-lang-option="fa"] {
   }
 }
 
-/* make room so the toggle never overlaps content on narrow screens */
+/* make room so the fixed toggles never overlap content on narrow screens */
 .page {
-  padding-top: 64px;
+  padding-top: 110px;
 }
 
 @media (max-width:640px) {
   .page {
-    padding-top: 56px;
+    padding-top: 96px;
   }
 }
 

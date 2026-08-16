@@ -6,6 +6,83 @@
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
   // ============================================================
+  // TOP NAV: smooth scroll, active-section highlight, scroll progress
+  // ============================================================
+  (function navModule() {
+    var navLinks = Array.prototype.slice.call(document.querySelectorAll(".topnav__links a[data-nav]"));
+    var progressBar = document.getElementById("scrollProgress");
+    var sections = navLinks
+      .map(function (link) {
+        var id = link.getAttribute("data-nav");
+        var el = document.getElementById(id);
+        return el ? { link: link, el: el } : null;
+      })
+      .filter(Boolean);
+
+    if (!sections.length && !progressBar) return;
+
+    // Smooth-scroll on click, accounting for the sticky nav height.
+    navLinks.forEach(function (link) {
+      link.addEventListener("click", function (e) {
+        var id = link.getAttribute("data-nav");
+        var target = document.getElementById(id);
+        if (!target) return;
+        e.preventDefault();
+        var nav = document.querySelector(".topnav");
+        var navHeight = nav ? nav.getBoundingClientRect().height : 0;
+        var top = target.getBoundingClientRect().top + window.pageYOffset - navHeight - 12;
+        window.scrollTo({ top: top, behavior: "smooth" });
+        if (window.history && window.history.pushState) {
+          window.history.pushState(null, "", "#" + id);
+        }
+      });
+    });
+
+    function updateActiveLink() {
+      var navEl = document.querySelector(".topnav");
+      var navHeight = navEl ? navEl.getBoundingClientRect().height : 0;
+      var probe = window.pageYOffset + navHeight + 24;
+
+      var activeIndex = -1;
+      sections.forEach(function (s, i) {
+        var top = s.el.getBoundingClientRect().top + window.pageYOffset;
+        if (probe >= top) activeIndex = i;
+      });
+
+      sections.forEach(function (s, i) {
+        if (i === activeIndex) {
+          s.link.classList.add("is-active");
+        } else {
+          s.link.classList.remove("is-active");
+        }
+      });
+    }
+
+    function updateProgress() {
+      if (!progressBar) return;
+      var scrollTop = window.pageYOffset;
+      var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      var pct = docHeight > 0 ? Math.min(100, Math.max(0, (scrollTop / docHeight) * 100)) : 0;
+      progressBar.style.width = pct + "%";
+    }
+
+    var ticking = false;
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(function () {
+        updateActiveLink();
+        updateProgress();
+        ticking = false;
+      });
+    }
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    onScroll();
+  })();
+
+  // ============================================================
   // LANGUAGE TOGGLE (EN default, LTR / FA, RTL)
   // ============================================================
   var STORAGE_KEY = "site-lang";
