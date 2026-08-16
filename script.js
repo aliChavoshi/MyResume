@@ -9,8 +9,10 @@
   // LANGUAGE TOGGLE (EN default, LTR / FA, RTL)
   // ============================================================
   var STORAGE_KEY = "site-lang";
+  var THEME_STORAGE_KEY = "site-theme";
   var htmlEl = document.documentElement;
   var toggleBtn = document.getElementById("langToggle");
+  var themeToggle = document.getElementById("themeToggle");
 
   // Elements whose *text content* swaps with data-fa / englishOriginal
   var textSwapEls = Array.prototype.slice.call(document.querySelectorAll("[data-fa]"));
@@ -76,6 +78,15 @@
       );
     }
 
+    if (themeToggle) {
+      var isDark = htmlEl.getAttribute("data-theme") === "dark";
+      var themeAction = isDark
+        ? (isFa ? "تغییر به حالت روشن" : "Switch to light mode")
+        : (isFa ? "تغییر به حالت تاریک" : "Switch to dark mode");
+      themeToggle.setAttribute("aria-label", themeAction);
+      themeToggle.setAttribute("title", themeAction);
+    }
+
     try {
       window.localStorage.setItem(STORAGE_KEY, isFa ? "fa" : "en");
     } catch (e) {
@@ -100,6 +111,51 @@
     toggleBtn.addEventListener("click", function () {
       currentLang = currentLang === "fa" ? "en" : "fa";
       applyLang(currentLang);
+    });
+  }
+
+  // ============================================================
+  // COLOR THEME — starts from the saved choice or system preference.
+  // The small inline script in <head> applies this before first paint.
+  // ============================================================
+  function applyTheme(theme) {
+    var isDark = theme === "dark";
+    if (isDark) htmlEl.setAttribute("data-theme", "dark");
+    else htmlEl.removeAttribute("data-theme");
+
+    if (themeToggle) {
+      var isFa = htmlEl.getAttribute("lang") === "fa";
+      var themeAction = isDark
+        ? (isFa ? "تغییر به حالت روشن" : "Switch to light mode")
+        : (isFa ? "تغییر به حالت تاریک" : "Switch to dark mode");
+      themeToggle.setAttribute("aria-label", themeAction);
+      themeToggle.setAttribute("title", themeAction);
+      themeToggle.setAttribute("aria-pressed", String(isDark));
+    }
+  }
+
+  function getInitialTheme() {
+    try {
+      var saved = window.localStorage.getItem(THEME_STORAGE_KEY);
+      if (saved === "dark" || saved === "light") return saved;
+    } catch (e) {
+      /* ignore */
+    }
+    return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+
+  var currentTheme = getInitialTheme();
+  applyTheme(currentTheme);
+
+  if (themeToggle) {
+    themeToggle.addEventListener("click", function () {
+      currentTheme = currentTheme === "dark" ? "light" : "dark";
+      applyTheme(currentTheme);
+      try {
+        window.localStorage.setItem(THEME_STORAGE_KEY, currentTheme);
+      } catch (e) {
+        /* localStorage unavailable — ignore */
+      }
     });
   }
 
