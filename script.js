@@ -13,6 +13,7 @@
   var htmlEl = document.documentElement;
   var toggleBtn = document.getElementById("langToggle");
   var themeToggle = document.getElementById("themeToggle");
+  var downloadCv = document.getElementById("downloadCv");
   var titleElement = document.querySelector("title");
   var resumeSections = Array.prototype.slice.call(document.querySelectorAll("main section[id]"));
   var activeTitleSection = null;
@@ -111,6 +112,15 @@
       themeToggle.setAttribute("title", themeAction);
     }
 
+    if (downloadCv) {
+      var resumeFile = isFa ? "Ali-Chavoshi-Resume-FA.pdf" : "Ali-Chavoshi-Resume-EN.pdf";
+      var resumeAction = isFa ? "دانلود رزومه فارسی به صورت PDF" : "Download English resume as PDF";
+      downloadCv.setAttribute("href", "output/pdf/" + resumeFile);
+      downloadCv.setAttribute("download", resumeFile);
+      downloadCv.setAttribute("aria-label", resumeAction);
+      downloadCv.setAttribute("title", resumeAction);
+    }
+
     updatePageTitle();
 
     try {
@@ -121,6 +131,8 @@
   }
 
   function getInitialLang() {
+    var requestedLang = new URLSearchParams(window.location.search).get("lang");
+    if (requestedLang === "fa" || requestedLang === "en") return requestedLang;
     try {
       var saved = window.localStorage.getItem(STORAGE_KEY);
       if (saved === "fa" || saved === "en") return saved;
@@ -161,6 +173,7 @@
   }
 
   function getInitialTheme() {
+    if (new URLSearchParams(window.location.search).get("print") === "1") return "light";
     try {
       var saved = window.localStorage.getItem(THEME_STORAGE_KEY);
       if (saved === "dark" || saved === "light") return saved;

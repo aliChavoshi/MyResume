@@ -960,6 +960,39 @@ svg {
   background: var(--accent-soft);
 }
 
+.download-cv {
+  position: fixed;
+  top: 76px;
+  inset-inline-end: 18px;
+  z-index: 100;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 9px 14px;
+  border: 1px solid var(--accent);
+  border-radius: 100px;
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 7px 18px rgba(15, 110, 91, .22);
+  font-size: .82rem;
+  font-weight: 700;
+  line-height: 1.25;
+  transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+.download-cv:hover {
+  transform: translateY(-2px);
+  background: var(--accent-2);
+  box-shadow: 0 10px 22px rgba(15, 110, 91, .28);
+}
+
+.download-cv svg {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+}
+
 .theme-toggle svg {
   width: 19px;
   height: 19px;
@@ -1043,6 +1076,14 @@ html[lang="fa"] .lang-toggle__option[data-lang-option="fa"] {
     inset-inline-start: 12px;
     width: 38px;
     height: 38px;
+  }
+
+  .download-cv {
+    top: 62px;
+    inset-inline-end: 12px;
+    min-height: 38px;
+    padding: 8px 12px;
+    font-size: .76rem;
   }
 
   .lang-toggle {
@@ -1575,6 +1616,61 @@ html[lang="fa"] .lightbox__title {
 /* body scroll lock when the lightbox is open */
 body.lightbox-open {
   overflow: hidden;
+}
+
+@media print {
+  .lang-toggle,
+  .theme-toggle,
+  .download-cv {
+    display: none !important;
+  }
+
+  .page {
+    max-width: none;
+    padding: 0;
+    gap: 18px;
+    grid-template-columns: 230px minmax(0, 1fr) !important;
+    align-items: start;
+    font-size: 11px;
+  }
+
+  .sidebar {
+    position: static;
+  }
+
+  .sidebar__inner {
+    padding: 20px 16px;
+  }
+
+  .avatar-wrap {
+    width: 104px;
+    height: 104px;
+    margin-bottom: 14px;
+  }
+
+  .sidebar__section {
+    margin-top: 18px;
+  }
+
+  .block {
+    padding: 18px;
+    margin-bottom: 16px;
+  }
+
+  .reveal,
+  .reveal *,
+  .sidebar {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+
+  .project,
+  .timeline__entry,
+  .cert-card,
+  .edu-card {
+    break-inside: avoid;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
