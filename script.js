@@ -232,9 +232,9 @@
   }
 
   // ============================================================
-  // HERO INTRO — word-by-word reveal, then staged fade-in for the
-  // CTA buttons and stats. Runs once on load, after the initial
-  // language has already been applied above.
+  // HERO INTRO — word-by-word reveal over a 4s window, then a
+  // staged fade-in: CTA at 3.5s, stats panel ("dashboard") at 4s.
+  // Runs once on load, after the initial language has been applied.
   // ============================================================
   (function heroIntroModule() {
     var title = document.querySelector(".hero-intro__title");
@@ -260,19 +260,20 @@
       return Array.prototype.slice.call(el.querySelectorAll(".word"));
     }
 
-    var stepMs = 45;
     var titleWords = title ? wrapWords(title) : [];
     var subtitleWords = subtitle ? wrapWords(subtitle) : [];
+    var allWords = titleWords.concat(subtitleWords);
 
-    titleWords.forEach(function (w, i) {
-      w.style.transitionDelay = (i * stepMs) + "ms";
+    // Spread every word's reveal across a fixed 3.5s window so the
+    // last word finishes blurring in right around the 4s mark —
+    // "reveal word-by-word over a 4-second duration".
+    var TEXT_WINDOW_MS = 3500;
+    allWords.forEach(function (w, i) {
+      var delay = allWords.length > 1
+        ? (i / (allWords.length - 1)) * TEXT_WINDOW_MS
+        : 0;
+      w.style.transitionDelay = delay + "ms";
     });
-    var titleEnd = titleWords.length * stepMs;
-
-    subtitleWords.forEach(function (w, i) {
-      w.style.transitionDelay = (titleEnd + 150 + i * stepMs) + "ms";
-    });
-    var subtitleEnd = titleEnd + 150 + subtitleWords.length * stepMs;
 
     // Two rAFs so the browser paints the initial (hidden) state first,
     // guaranteeing the CSS transition actually fires.
@@ -283,15 +284,17 @@
       });
     });
 
+    // Fixed staged timeline, independent of word count: button at
+    // 3.5s, stats panel (this resume's "dashboard" equivalent) at 4s.
     if (actions) {
       window.setTimeout(function () {
         actions.classList.add("is-visible");
-      }, subtitleEnd + 200);
+      }, 3500);
     }
     if (stats) {
       window.setTimeout(function () {
         stats.classList.add("is-visible");
-      }, subtitleEnd + 450);
+      }, 4000);
     }
   })();
 

@@ -134,12 +134,14 @@ svg {
 
 /* ============================================================
    HERO INTRO
+   Spacing follows the brief exactly:
+   navbar bottom -> 100px -> header -> 24px -> subtitle -> 24px -> CTA
    ============================================================ */
 .hero-intro {
   position: relative;
   overflow: hidden;
   isolation: isolate;
-  padding: 110px 24px 56px;
+  padding: 100px 24px 56px;
   text-align: center;
 }
 
@@ -161,55 +163,21 @@ html[data-theme="dark"] .hero-intro__glow {
   margin: 0 auto;
 }
 
-.hero-intro__badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  font-size: .82rem;
-  font-weight: 700;
-  padding: 8px 16px;
-  border-radius: 100px;
-  background: var(--accent-soft);
-  color: var(--accent-2);
-  margin-bottom: 22px;
-}
-
-.hero-intro__badge-dot {
-  width: 8px;
-  height: 8px;
-  flex-shrink: 0;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent-2), var(--accent));
-  animation: hero-pulse 2.2s ease-in-out infinite;
-}
-
-@keyframes hero-pulse {
-
-  0%,
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-
-  50% {
-    transform: scale(1.4);
-    opacity: .55;
-  }
-}
-
 .hero-intro__title {
   font-size: clamp(1.9rem, 4.2vw, 3.05rem);
   font-weight: 800;
   line-height: 1.25;
   letter-spacing: -.02em;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+  /* header bottom -> secondary text top */
 }
 
 .hero-intro__subtitle {
   font-size: 1.1rem;
   color: var(--ink-soft);
   line-height: 1.8;
-  margin-bottom: 34px;
+  margin-bottom: 24px;
+  /* secondary text bottom -> CTA top */
 }
 
 .hero-intro__title .word,
@@ -231,8 +199,9 @@ html[data-theme="dark"] .hero-intro__glow {
 .hero-intro__actions {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   justify-content: center;
-  gap: 14px;
+  gap: 22px;
   margin-bottom: 38px;
   opacity: 0;
   transform: translateY(8px);
@@ -244,39 +213,43 @@ html[data-theme="dark"] .hero-intro__glow {
   transform: translateY(0);
 }
 
+/* Single CTA button — default: neutral surface / dark text
+   (the light-mode equivalent of "white bg, black text"),
+   hover: brand gradient + white text + 1.05x scale. */
 .hero-cta {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 13px 26px;
+  padding: 14px 30px;
   border-radius: 100px;
   font-weight: 700;
   font-size: .95rem;
-  transition: transform .25s cubic-bezier(.22, .61, .36, 1),
-    box-shadow .25s ease, background .3s ease, color .2s ease, border-color .2s ease;
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: 0 10px 26px rgba(15, 110, 91, .16);
+  transition: transform .3s cubic-bezier(.22, .61, .36, 1),
+    box-shadow .3s ease, background .35s ease, color .2s ease;
 }
 
-.hero-cta--primary {
+.hero-cta:hover,
+.hero-cta:focus-visible {
   background: linear-gradient(135deg, var(--accent-2), var(--accent));
   color: #fff;
-  box-shadow: 0 10px 26px rgba(15, 110, 91, .28);
+  transform: scale(1.05);
+  box-shadow: 0 14px 32px rgba(15, 110, 91, .34);
 }
 
-.hero-cta--primary:hover {
-  transform: translateY(-2px) scale(1.03);
-  box-shadow: 0 14px 32px rgba(15, 110, 91, .36);
+.hero-intro__secondary-link {
+  font-size: .92rem;
+  font-weight: 600;
+  color: var(--muted);
+  border-bottom: 1px solid transparent;
+  transition: color .2s ease, border-color .2s ease;
 }
 
-.hero-cta--ghost {
-  background: transparent;
-  border: 1.5px solid var(--border);
-  color: var(--ink);
-}
-
-.hero-cta--ghost:hover {
-  border-color: var(--accent);
+.hero-intro__secondary-link:hover {
   color: var(--accent);
-  transform: translateY(-2px);
+  border-color: var(--accent);
 }
 
 .hero-intro__stats {
@@ -318,7 +291,8 @@ html[data-theme="dark"] .hero-intro__glow {
 
 @media (max-width:640px) {
   .hero-intro {
-    padding: 96px 18px 44px;
+    padding-inline: 18px;
+    padding-bottom: 44px;
   }
 
   .hero-intro__stats {
@@ -348,13 +322,13 @@ main section[id] {
   scroll-margin-top: calc(var(--topnav-h) + 16px);
 }
 
-/* subtle full-page grain — adds texture without being noticeable on its own */
+/* subtle full-page grain — 0.03 opacity, per spec */
 body::after {
   content: "";
   position: fixed;
   inset: 0;
   z-index: 999;
-  opacity: .035;
+  opacity: .03;
   mix-blend-mode: overlay;
   pointer-events: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
