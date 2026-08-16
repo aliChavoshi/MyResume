@@ -90,7 +90,7 @@
   var htmlEl = document.documentElement;
   var toggleBtn = document.getElementById("langToggle");
   var themeToggle = document.getElementById("themeToggle");
-  var downloadCv = document.getElementById("downloadCv");
+  var downloadCvEls = Array.prototype.slice.call(document.querySelectorAll(".js-download-cv"));
   var titleElement = document.querySelector("title");
   var resumeSections = Array.prototype.slice.call(document.querySelectorAll("main section[id]"));
   var activeTitleSection = null;
@@ -189,13 +189,15 @@
       themeToggle.setAttribute("title", themeAction);
     }
 
-    if (downloadCv) {
+    if (downloadCvEls.length) {
       var resumeFile = isFa ? "Ali-Chavoshi-Resume-FA.pdf" : "Ali-Chavoshi-Resume-EN.pdf";
       var resumeAction = isFa ? "دانلود رزومه فارسی به صورت PDF" : "Download English resume as PDF";
-      downloadCv.setAttribute("href", "output/pdf/" + resumeFile);
-      downloadCv.setAttribute("download", resumeFile);
-      downloadCv.setAttribute("aria-label", resumeAction);
-      downloadCv.setAttribute("title", resumeAction);
+      downloadCvEls.forEach(function (el) {
+        el.setAttribute("href", "output/pdf/" + resumeFile);
+        el.setAttribute("download", resumeFile);
+        el.setAttribute("aria-label", resumeAction);
+        el.setAttribute("title", resumeAction);
+      });
     }
 
     updatePageTitle();
@@ -228,6 +230,70 @@
       applyLang(currentLang);
     });
   }
+
+  // ============================================================
+  // HERO INTRO — word-by-word reveal, then staged fade-in for the
+  // CTA buttons and stats. Runs once on load, after the initial
+  // language has already been applied above.
+  // ============================================================
+  (function heroIntroModule() {
+    var title = document.querySelector(".hero-intro__title");
+    var subtitle = document.querySelector(".hero-intro__subtitle");
+    var actions = document.querySelector(".hero-intro__actions");
+    var stats = document.querySelector(".hero-intro__stats");
+    if (!title && !subtitle && !actions && !stats) return;
+
+    var reduceMotion = window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (reduceMotion) {
+      if (actions) actions.classList.add("is-visible");
+      if (stats) stats.classList.add("is-visible");
+      return;
+    }
+
+    function wrapWords(el) {
+      var words = el.textContent.trim().split(/\s+/);
+      el.innerHTML = words
+        .map(function (w) { return '<span class="word">' + w + "</span>"; })
+        .join(" ");
+      return Array.prototype.slice.call(el.querySelectorAll(".word"));
+    }
+
+    var stepMs = 45;
+    var titleWords = title ? wrapWords(title) : [];
+    var subtitleWords = subtitle ? wrapWords(subtitle) : [];
+
+    titleWords.forEach(function (w, i) {
+      w.style.transitionDelay = (i * stepMs) + "ms";
+    });
+    var titleEnd = titleWords.length * stepMs;
+
+    subtitleWords.forEach(function (w, i) {
+      w.style.transitionDelay = (titleEnd + 150 + i * stepMs) + "ms";
+    });
+    var subtitleEnd = titleEnd + 150 + subtitleWords.length * stepMs;
+
+    // Two rAFs so the browser paints the initial (hidden) state first,
+    // guaranteeing the CSS transition actually fires.
+    window.requestAnimationFrame(function () {
+      window.requestAnimationFrame(function () {
+        if (title) title.classList.add("is-revealed");
+        if (subtitle) subtitle.classList.add("is-revealed");
+      });
+    });
+
+    if (actions) {
+      window.setTimeout(function () {
+        actions.classList.add("is-visible");
+      }, subtitleEnd + 200);
+    }
+    if (stats) {
+      window.setTimeout(function () {
+        stats.classList.add("is-visible");
+      }, subtitleEnd + 450);
+    }
+  })();
 
   // ============================================================
   // COLOR THEME — starts from the saved choice or system preference.
