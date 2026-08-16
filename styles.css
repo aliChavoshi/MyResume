@@ -923,7 +923,7 @@ body::after {
 }
 
 .timeline__meta {
-  font-family: var(--font-mono);
+  font-family: var(--font-fa);
   font-size: .8rem;
   color: var(--muted);
   margin-bottom: 14px;
