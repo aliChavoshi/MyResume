@@ -402,26 +402,142 @@ html[data-theme="dark"] .hero-intro__glow {
   transform: translateY(0);
 }
 
-.hero-stat {
+/* ---- Impact Strip ---- */
+.impact-strip {
+  gap: 12px;
+  margin-top: 44px;
+}
+
+.impact-item {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  gap: 6px;
+  padding: 18px 22px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.13);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  min-width: 120px;
+  flex: 1 1 120px;
+  max-width: 160px;
+  transition: transform .25s cubic-bezier(.22,.61,.36,1),
+              border-color .2s ease,
+              background .2s ease;
+  cursor: default;
 }
 
-.hero-stat strong {
-  font-size: 1.6rem;
+.impact-item:hover {
+  transform: translateY(-4px);
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(53,194,155,0.40);
+}
+
+.impact-item--award {
+  border-color: rgba(201,162,39,0.35);
+  background: rgba(201,162,39,0.08);
+}
+
+.impact-item--award:hover {
+  border-color: rgba(201,162,39,0.60);
+  background: rgba(201,162,39,0.14);
+}
+
+.impact-item__icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: rgba(53,194,155,0.15);
+  border: 1px solid rgba(53,194,155,0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  margin-bottom: 2px;
+}
+
+.impact-item--award .impact-item__icon {
+  background: rgba(201,162,39,0.15);
+  border-color: rgba(201,162,39,0.28);
+  color: #C9A227;
+}
+
+.impact-item__icon svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.impact-item__number {
+  font-size: 1.55rem;
   font-weight: 800;
   background: linear-gradient(135deg, var(--accent-2), var(--accent));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  line-height: 1.1;
+  font-family: var(--font-mono);
 }
 
-.hero-stat span {
-  font-size: .82rem;
-  color: var(--muted);
+.impact-item__number--text {
+  font-size: 1rem;
+  font-family: var(--font-fa);
+  text-align: center;
+}
+
+.impact-item--award .impact-item__number {
+  background: linear-gradient(135deg, #E8B923, #C9A227);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.impact-item__label {
+  font-size: .76rem;
+  color: rgba(255,255,255,0.60);
   font-weight: 600;
+  text-align: center;
+  line-height: 1.3;
+}
+
+/* count-up animation on first reveal */
+@keyframes count-pop {
+  0%   { transform: scale(.85); opacity: 0; }
+  60%  { transform: scale(1.08); }
+  100% { transform: scale(1);   opacity: 1; }
+}
+
+.impact-strip.is-visible .impact-item__number {
+  animation: count-pop .5s cubic-bezier(.22,.61,.36,1) both;
+}
+
+.impact-strip.is-visible .impact-item:nth-child(1) .impact-item__number { animation-delay: .05s; }
+.impact-strip.is-visible .impact-item:nth-child(2) .impact-item__number { animation-delay: .12s; }
+.impact-strip.is-visible .impact-item:nth-child(3) .impact-item__number { animation-delay: .19s; }
+.impact-strip.is-visible .impact-item:nth-child(4) .impact-item__number { animation-delay: .26s; }
+.impact-strip.is-visible .impact-item:nth-child(5) .impact-item__number { animation-delay: .33s; }
+.impact-strip.is-visible .impact-item:nth-child(6) .impact-item__number { animation-delay: .40s; }
+
+/* light mode overrides */
+html:not([data-theme="dark"]) .impact-item {
+  background: rgba(15,110,91,0.06);
+  border-color: rgba(15,110,91,0.15);
+}
+
+html:not([data-theme="dark"]) .impact-item:hover {
+  background: rgba(15,110,91,0.11);
+  border-color: rgba(15,110,91,0.35);
+}
+
+html:not([data-theme="dark"]) .impact-item--award {
+  background: rgba(201,162,39,0.06);
+  border-color: rgba(201,162,39,0.25);
+}
+
+html:not([data-theme="dark"]) .impact-item__label {
+  color: var(--muted);
 }
 
 @media (max-width:640px) {
@@ -433,6 +549,23 @@ html[data-theme="dark"] .hero-intro__glow {
   .hero-intro__stats {
     gap: 22px;
   }
+
+  .impact-strip {
+    gap: 8px;
+    margin-top: 32px;
+  }
+
+  .impact-item {
+    min-width: 100px;
+    max-width: none;
+    padding: 14px 14px;
+    flex: 1 1 100px;
+  }
+
+  .impact-item__number { font-size: 1.25rem; }
+  .impact-item__label  { font-size: .70rem; }
+  .impact-item__icon   { width: 26px; height: 26px; }
+  .impact-item__icon svg { width: 13px; height: 13px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

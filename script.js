@@ -6,6 +6,80 @@
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
   // ============================================================
+  // IMPACT STRIP — count-up animation + lang swap for labels
+  // ============================================================
+  (function impactModule() {
+    var strip = document.querySelector(".impact-strip");
+    if (!strip) return;
+
+    // Lang swap for impact labels
+    var items = Array.prototype.slice.call(strip.querySelectorAll(".impact-item"));
+    var numberEls = Array.prototype.slice.call(strip.querySelectorAll(".impact-item__number[data-count]"));
+
+    function updateImpactLang(isFa) {
+      items.forEach(function (item) {
+        var labelEl = item.querySelector(".impact-item__label");
+        var numEl   = item.querySelector(".impact-item__number");
+        if (labelEl) {
+          labelEl.textContent = isFa
+            ? (item.getAttribute("data-fa-label") || labelEl.textContent)
+            : (item.getAttribute("data-label")    || labelEl.textContent);
+        }
+        if (numEl && numEl.hasAttribute("data-fa")) {
+          numEl.textContent = isFa
+            ? numEl.getAttribute("data-fa")
+            : numEl.getAttribute("data-en-cache") || numEl.textContent;
+        }
+      });
+    }
+
+    // Expose so langModule can call it after language switch
+    window._updateImpactLang = updateImpactLang;
+
+    // Count-up: runs once when strip becomes visible
+    var counted = false;
+
+    function countUp() {
+      if (counted) return;
+      counted = true;
+      numberEls.forEach(function (el) {
+        var target   = parseInt(el.getAttribute("data-count"), 10);
+        var suffix   = el.getAttribute("data-suffix") || "";
+        var duration = 1200;
+        var start    = performance.now();
+
+        function tick(now) {
+          var elapsed  = now - start;
+          var progress = Math.min(elapsed / duration, 1);
+          // ease-out cubic
+          var eased    = 1 - Math.pow(1 - progress, 3);
+          var current  = Math.round(eased * target);
+          el.textContent = current + suffix;
+          if (progress < 1) requestAnimationFrame(tick);
+        }
+
+        requestAnimationFrame(tick);
+      });
+    }
+
+    if (!("IntersectionObserver" in window)) {
+      countUp();
+      return;
+    }
+
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          countUp();
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+
+    obs.observe(strip);
+  })();
+
+  // ============================================================
   // TOP NAV: smooth scroll, active-section highlight, scroll progress
   // ============================================================
   (function navModule() {
