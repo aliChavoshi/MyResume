@@ -90,6 +90,75 @@
    })();
 
    // ============================================================
+   // COLLAPSIBLE LISTS — any [data-collapsible="N"] list is clipped to
+   // its first N items behind a toggle. A single role can carry a dozen
+   // bullets; showing them all turns the timeline into something the
+   // reader scrolls past instead of reads.
+   // ============================================================
+   (function collapsibleListsModule() {
+      var lists = Array.prototype.slice.call(document.querySelectorAll("[data-collapsible]"));
+      if (!lists.length) return;
+
+      var LABELS = {
+         more: { en: "Show all details", fa: "مشاهده همه موارد" },
+         less: { en: "Show less", fa: "نمایش کمتر" },
+      };
+
+      var CHEVRON =
+         '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.4 5.6 9l1.4-1.4 5 5 5-5L18.4 9z"/></svg>';
+
+      var registry = [];
+
+      lists.forEach(function (list) {
+         var keep = parseInt(list.getAttribute("data-collapsible"), 10) || 5;
+         var items = Array.prototype.slice.call(list.children);
+         if (items.length <= keep) return;
+
+         var hidden = items.slice(keep);
+
+         var btn = document.createElement("button");
+         btn.type = "button";
+         btn.className = "list-toggle";
+         var labelEl = document.createElement("span");
+         btn.appendChild(labelEl);
+         btn.insertAdjacentHTML("beforeend", CHEVRON);
+         list.parentNode.insertBefore(btn, list.nextSibling);
+
+         var entry = { expanded: false, labelEl: labelEl, btn: btn };
+
+         function render() {
+            // Hiding the overflow items outright keeps this correct in the
+            // multi-column layout, where a max-height clip cuts the second
+            // column at an arbitrary point.
+            hidden.forEach(function (li) {
+               li.hidden = !entry.expanded;
+            });
+            btn.setAttribute("aria-expanded", String(entry.expanded));
+            var lang = document.documentElement.getAttribute("lang") === "fa" ? "fa" : "en";
+            var text = LABELS[entry.expanded ? "less" : "more"][lang];
+            labelEl.textContent = text;
+            btn.setAttribute("aria-label", text);
+         }
+
+         entry.render = render;
+         render();
+         registry.push(entry);
+
+         btn.addEventListener("click", function () {
+            entry.expanded = !entry.expanded;
+            render();
+         });
+      });
+
+      // The toggle's own label has to follow a language swap.
+      window._refreshCollapsibles = function () {
+         registry.forEach(function (entry) {
+            entry.render();
+         });
+      };
+   })();
+
+   // ============================================================
    // IMPACT STRIP — count-up animation + lang swap for labels
    // ============================================================
    (function impactModule() {
@@ -163,10 +232,66 @@
    })();
 
    // ============================================================
+   // MOBILE SECTION MENU — the link rail collapses into a drop-down
+   // below 620px, where the action cluster leaves it no usable width.
+   // ============================================================
+   (function navMenuModule() {
+      var btn = document.getElementById("navToggle");
+      var panel = document.getElementById("navLinks");
+      if (!btn || !panel) return;
+
+      var LABELS = {
+         open: { en: "Open section menu", fa: "باز کردن منو" },
+         close: { en: "Close section menu", fa: "بستن منو" },
+      };
+
+      function setOpen(open) {
+         btn.setAttribute("aria-expanded", String(open));
+         panel.classList.toggle("is-open", open);
+         var lang = document.documentElement.getAttribute("lang") === "fa" ? "fa" : "en";
+         btn.setAttribute("aria-label", LABELS[open ? "close" : "open"][lang]);
+      }
+
+      setOpen(false);
+      window._refreshNavMenuLang = function () {
+         setOpen(panel.classList.contains("is-open"));
+      };
+
+      btn.addEventListener("click", function (e) {
+         e.stopPropagation();
+         setOpen(btn.getAttribute("aria-expanded") !== "true");
+      });
+
+      // Jumping to a section should dismiss the panel covering it.
+      panel.addEventListener("click", function (e) {
+         if (e.target.closest("a")) setOpen(false);
+      });
+
+      document.addEventListener("click", function (e) {
+         if (!panel.contains(e.target) && !btn.contains(e.target)) setOpen(false);
+      });
+
+      document.addEventListener("keydown", function (e) {
+         if (e.key === "Escape" && btn.getAttribute("aria-expanded") === "true") {
+            setOpen(false);
+            btn.focus();
+         }
+      });
+
+      // Growing past the breakpoint restores the inline rail; leaving the
+      // panel flagged open would then apply .is-open styles to it.
+      window.addEventListener("resize", function () {
+         if (window.innerWidth > 620) setOpen(false);
+      });
+   })();
+
+   // ============================================================
    // TOP NAV: smooth scroll, active-section highlight, scroll progress
    // ============================================================
    (function navModule() {
-      var navLinks = Array.prototype.slice.call(document.querySelectorAll(".topnav__links a[data-nav]"));
+      // Contact sits in the action cluster rather than the link rail, so scope
+      // this to the whole bar to keep it in the smooth-scroll + highlight set.
+      var navLinks = Array.prototype.slice.call(document.querySelectorAll(".topnav a[data-nav]"));
       var progressBar = document.getElementById("scrollProgress");
       var sections = navLinks
          .map(function (link) {
@@ -384,6 +509,11 @@
 
       updatePageTitle();
 
+      // Swapped copy changes how many lines the kept items take, and the
+      // toggle's own label has to follow the language too.
+      if (window._refreshCollapsibles) window._refreshCollapsibles();
+      if (window._refreshNavMenuLang) window._refreshNavMenuLang();
+
       try {
          window.localStorage.setItem(STORAGE_KEY, isFa ? "fa" : "en");
       } catch (e) {
@@ -427,10 +557,29 @@
 
       var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-      if (reduceMotion) {
+      // This used to run for a full 4 seconds before the CTA and the stats
+      // existed, so every visitor — and every return visit — waited in front
+      // of a half-empty screen. It now resolves in well under a second, and
+      // replays only once per browsing session.
+      var seen = false;
+      try {
+         seen = window.sessionStorage.getItem("hero-intro-seen") === "1";
+      } catch (e) {
+         /* private mode — just play it */
+      }
+
+      if (reduceMotion || seen) {
+         if (title) title.classList.add("is-revealed", "is-instant");
+         if (subtitle) subtitle.classList.add("is-revealed", "is-instant");
          if (actions) actions.classList.add("is-visible");
          if (stats) stats.classList.add("is-visible");
          return;
+      }
+
+      try {
+         window.sessionStorage.setItem("hero-intro-seen", "1");
+      } catch (e) {
+         /* ignore */
       }
 
       function wrapWords(el) {
@@ -445,15 +594,17 @@
 
       var titleWords = title ? wrapWords(title) : [];
       var subtitleWords = subtitle ? wrapWords(subtitle) : [];
-      var allWords = titleWords.concat(subtitleWords);
 
-      // Spread every word's reveal across a fixed 3.5s window so the
-      // last word finishes blurring in right around the 4s mark —
-      // "reveal word-by-word over a 4-second duration".
-      var TEXT_WINDOW_MS = 3500;
-      allWords.forEach(function (w, i) {
-         var delay = allWords.length > 1 ? (i / (allWords.length - 1)) * TEXT_WINDOW_MS : 0;
+      // The headline carries the reveal; the subtitle trails it as a single
+      // block rather than word-by-word, so the eye is not asked to track two
+      // separate crawls at once.
+      var TITLE_WINDOW_MS = 560;
+      titleWords.forEach(function (w, i) {
+         var delay = titleWords.length > 1 ? (i / (titleWords.length - 1)) * TITLE_WINDOW_MS : 0;
          w.style.transitionDelay = delay + "ms";
+      });
+      subtitleWords.forEach(function (w) {
+         w.style.transitionDelay = "420ms";
       });
 
       // Two rAFs so the browser paints the initial (hidden) state first,
@@ -465,17 +616,15 @@
          });
       });
 
-      // Fixed staged timeline, independent of word count: button at
-      // 3.5s, stats panel (this resume's "dashboard" equivalent) at 4s.
       if (actions) {
          window.setTimeout(function () {
             actions.classList.add("is-visible");
-         }, 3500);
+         }, 520);
       }
       if (stats) {
          window.setTimeout(function () {
             stats.classList.add("is-visible");
-         }, 4000);
+         }, 660);
       }
    })();
 

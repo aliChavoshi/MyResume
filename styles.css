@@ -139,11 +139,14 @@ html[data-theme="dark"] .fog__blob {
 :root {
   --ink: #1C2321;
   --ink-soft: #4B5560;
-  --muted: #7A8790;
+  --muted: #646F78;
   --bg: #F4F6F5;
   --card: #FFFFFF;
   --accent: #0F6E5B;
   --accent-soft: #E4F3EE;
+  /* Foreground for anything filled with --accent. Dark mode's accent is a
+     light mint, so white text on it fails contrast — it flips to dark ink. */
+  --on-accent: #FFFFFF;
   --accent-2: #16805F;
   --border: #E3E8E6;
   --sidebar-bg: #14211E;
@@ -169,6 +172,7 @@ html[data-theme="dark"] {
   --card: #17221F;
   --accent: #47C39E;
   --accent-soft: #173C33;
+  --on-accent: #06231C;
   --accent-2: #62D2A8;
   --border: #2C403A;
   --sidebar-bg: #0A100E;
@@ -259,6 +263,14 @@ svg {
   align-items: start;
 }
 
+/* Grid items default to min-width:auto, so a single unbreakable child
+   (the email address) widened the whole track past the viewport on
+   narrow phones. */
+.sidebar,
+.content {
+  min-width: 0;
+}
+
 @media (max-width:920px) {
   .page {
     grid-template-columns: 1fr;
@@ -276,7 +288,7 @@ svg {
   position: relative;
   overflow: hidden;
   isolation: isolate;
-  padding: 100px 24px 56px;
+  padding: clamp(52px, 7vw, 84px) 24px clamp(44px, 6vw, 64px);
   text-align: center;
 }
 
@@ -321,7 +333,16 @@ html[data-theme="dark"] .hero-intro__glow {
   opacity: 0;
   filter: blur(8px);
   transform: translateY(10px);
-  transition: opacity .5s ease, filter .5s ease, transform .5s ease;
+  transition: opacity .34s ease, filter .34s ease, transform .34s ease;
+}
+
+/* Return visits within the session skip the reveal outright. */
+.hero-intro__title.is-instant .word,
+.hero-intro__subtitle.is-instant .word {
+  opacity: 1;
+  filter: none;
+  transform: none;
+  transition: none;
 }
 
 .hero-intro__title.is-revealed .word,
@@ -340,7 +361,7 @@ html[data-theme="dark"] .hero-intro__glow {
   margin-bottom: 38px;
   opacity: 0;
   transform: translateY(8px);
-  transition: opacity .6s ease, transform .6s ease;
+  transition: opacity .4s ease, transform .4s ease;
 }
 
 .hero-intro__actions.is-visible {
@@ -369,32 +390,39 @@ html[data-theme="dark"] .hero-intro__glow {
 .hero-cta:hover,
 .hero-cta:focus-visible {
   background: linear-gradient(135deg, var(--accent-2), var(--accent));
-  color: #fff;
+  color: var(--on-accent);
   transform: scale(1.05);
   box-shadow: 0 14px 32px rgba(15, 110, 91, .34);
 }
 
 .hero-intro__secondary-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 26px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
   font-size: .92rem;
-  font-weight: 600;
-  color: var(--muted);
-  border-bottom: 1px solid transparent;
-  transition: color .2s ease, border-color .2s ease;
+  font-weight: 700;
+  color: var(--ink-soft);
+  transition: color .2s ease, border-color .2s ease, background .2s ease;
 }
 
-.hero-intro__secondary-link:hover {
+.hero-intro__secondary-link:hover,
+.hero-intro__secondary-link:focus-visible {
   color: var(--accent);
   border-color: var(--accent);
+  background: var(--accent-soft);
 }
 
+/* ---- Impact Strip ----
+   An explicit column count at every breakpoint. Flex-wrap left a lone
+   sixth tile stranded on its own row at desktop width; a grid divides
+   six tiles evenly however many columns the viewport can hold. */
 .hero-intro__stats {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 36px;
   opacity: 0;
   transform: translateY(8px);
-  transition: opacity .6s ease, transform .6s ease;
+  transition: opacity .4s ease, transform .4s ease;
 }
 
 .hero-intro__stats.is-visible {
@@ -402,10 +430,24 @@ html[data-theme="dark"] .hero-intro__glow {
   transform: translateY(0);
 }
 
-/* ---- Impact Strip ---- */
 .impact-strip {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 12px;
-  margin-top: 44px;
+  width: min(100%, 1020px);
+  margin: 44px auto 0;
+}
+
+@media (max-width:1024px) {
+  .impact-strip {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width:420px) {
+  .impact-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .impact-item {
@@ -420,9 +462,7 @@ html[data-theme="dark"] .hero-intro__glow {
   border: 1px solid rgba(255, 255, 255, 0.13);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  min-width: 120px;
-  flex: 1 1 120px;
-  max-width: 160px;
+  min-width: 0;
   transition: transform .25s cubic-bezier(.22, .61, .36, 1),
     border-color .2s ease,
     background .2s ease;
@@ -563,8 +603,10 @@ html:not([data-theme="dark"]) .impact-item--award {
   border-color: rgba(201, 162, 39, 0.25);
 }
 
+/* These sit on the accent-tinted hero rather than plain card white, which
+   costs enough contrast to drop --muted under AA at this text size. */
 html:not([data-theme="dark"]) .impact-item__label {
-  color: var(--muted);
+  color: var(--ink-soft);
 }
 
 @media (max-width:640px) {
@@ -573,20 +615,13 @@ html:not([data-theme="dark"]) .impact-item__label {
     padding-bottom: 44px;
   }
 
-  .hero-intro__stats {
-    gap: 22px;
-  }
-
   .impact-strip {
     gap: 8px;
     margin-top: 32px;
   }
 
   .impact-item {
-    min-width: 100px;
-    max-width: none;
-    padding: 14px 14px;
-    flex: 1 1 100px;
+    padding: 14px 10px;
   }
 
   .impact-item__number {
@@ -1191,9 +1226,12 @@ body::after {
   font-weight: 700;
 }
 
+/* `columns` is ignored on a flex container, so this never actually
+   produced two columns — it needs to opt back out of the flex layout. */
 .dash-list--two-col {
+  display: block;
   columns: 2;
-  column-gap: 32px;
+  column-gap: 34px;
 }
 
 .dash-list--two-col li {
@@ -1201,9 +1239,51 @@ body::after {
   margin-bottom: 10px;
 }
 
-@media (max-width:720px) {
+@media (max-width:860px) {
   .dash-list--two-col {
     columns: 1;
+  }
+}
+
+/* ---- Collapsible long lists ----
+   A single role can carry a dozen bullets. Showing all of them at once
+   turns the timeline into a wall the reader scrolls past rather than
+   reads; the rest stays one click away. */
+.list-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 14px;
+  padding: 7px 15px;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  background: transparent;
+  color: var(--accent);
+  font-family: inherit;
+  font-size: .85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .2s ease, border-color .2s ease;
+}
+
+.list-toggle:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+
+.list-toggle svg {
+  width: 14px;
+  height: 14px;
+  transition: transform .3s ease;
+}
+
+.list-toggle[aria-expanded="true"] svg {
+  transform: rotate(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .list-toggle svg {
+    transition: none;
   }
 }
 
@@ -1266,7 +1346,7 @@ body::after {
   padding: 13px 26px;
   border-radius: 100px;
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
   font-weight: 700;
   font-size: .98rem;
   transition: background .15s ease, transform .15s ease;
@@ -1275,7 +1355,6 @@ body::after {
 .btn-teacher svg {
   width: 1.1em;
   height: 1.1em;
-  transform: scaleX(-1);
 }
 
 .btn-teacher:hover {
@@ -1288,8 +1367,15 @@ body::after {
    ============================================================ */
 .project-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
   gap: 20px;
+  align-items: stretch;
+}
+
+/* With an odd number of projects the last card sat alone next to an
+   empty cell; let it take the full row instead. */
+.project:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
 }
 
 .project {
@@ -1384,10 +1470,14 @@ body::after {
 /* ============================================================
    TWO-COLUMN (education + tech)
    ============================================================ */
+/* Education holds one entry, Technologies holds five. Equal columns
+   stretched the short card into a mostly-empty box, so give the denser
+   card more room and let each end where its content ends. */
 .two-col {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1.3fr;
   gap: 24px;
+  align-items: start;
 }
 
 @media (max-width:760px) {
@@ -1456,6 +1546,12 @@ body::after {
   --topnav-h: 56px;
 }
 
+@media (max-width:560px) {
+  :root {
+    --topnav-h: 52px;
+  }
+}
+
 .topnav {
   position: sticky;
   top: 0;
@@ -1484,7 +1580,7 @@ body::after {
   padding: 0 24px;
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
 }
 
 .topnav__brand {
@@ -1495,19 +1591,28 @@ body::after {
   flex-shrink: 0;
 }
 
+/* The link rail scrolls on its own when it runs out of room. The mask
+   fades the cut-off edge so it reads as "more to scroll", not "clipped". */
+.topnav__scroller {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  mask-image: linear-gradient(to right, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+}
+
+.topnav__scroller::-webkit-scrollbar {
+  display: none;
+}
+
 .topnav__links {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
   list-style: none;
-  overflow-x: auto;
-  scrollbar-width: none;
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
-.topnav__links::-webkit-scrollbar {
-  display: none;
+  width: max-content;
 }
 
 .topnav__links a {
@@ -1531,84 +1636,42 @@ body::after {
   background: var(--accent-soft);
 }
 
-@media (max-width:760px) {
-  .topnav__brand {
-    display: none;
-  }
-
-  .topnav__inner {
-    padding: 0 16px;
-  }
-
-  .topnav__links a {
-    padding: 6px 10px;
-    font-size: .8rem;
-  }
+/* ============================================================
+   NAV ACTIONS — theme, language, resume, contact
+   All three used to float over the page as fixed overlays, which
+   meant they permanently covered a slice of the content column.
+   They live in the bar now, so nothing sits on top of the page.
+   ============================================================ */
+.topnav__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
 }
 
-/* ============================================================
-   THEME + LANGUAGE TOGGLES
-   ============================================================ */
 .theme-toggle {
-  position: fixed;
-  top: calc(var(--topnav-h) + 14px);
-  inset-inline-start: 18px;
-  z-index: 100;
-  width: 42px;
-  height: 42px;
+  width: 34px;
+  height: 34px;
   display: grid;
   place-items: center;
   border: 1px solid var(--border);
   border-radius: 50%;
-  background: var(--card);
-  color: var(--accent);
-  box-shadow: 0 2px 10px rgba(20, 33, 30, .08);
+  background: transparent;
+  color: var(--ink-soft);
   cursor: pointer;
-  transition: transform .2s ease, background .2s ease, color .2s ease, border-color .2s ease;
+  transition: background .2s ease, color .2s ease, border-color .2s ease;
   -webkit-tap-highlight-color: transparent;
 }
 
 .theme-toggle:hover {
-  transform: translateY(-2px);
   background: var(--accent-soft);
-}
-
-.download-cv {
-  position: fixed;
-  top: calc(var(--topnav-h) + 72px);
-  inset-inline-end: 18px;
-  z-index: 100;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 42px;
-  padding: 9px 14px;
-  border: 1px solid var(--accent);
-  border-radius: 100px;
-  background: var(--accent);
-  color: #fff;
-  box-shadow: 0 7px 18px rgba(15, 110, 91, .22);
-  font-size: .82rem;
-  font-weight: 700;
-  line-height: 1.25;
-  transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
-}
-
-.download-cv:hover {
-  transform: translateY(-2px);
-  background: var(--accent-2);
-  box-shadow: 0 10px 22px rgba(15, 110, 91, .28);
-}
-
-.download-cv svg {
-  width: 18px;
-  height: 18px;
-  flex: 0 0 auto;
+  color: var(--accent);
+  border-color: var(--accent);
 }
 
 .theme-toggle svg {
-  width: 19px;
-  height: 19px;
+  width: 17px;
+  height: 17px;
 }
 
 .theme-toggle__moon,
@@ -1621,21 +1684,16 @@ html[data-theme="dark"] .theme-toggle__moon {
 }
 
 .lang-toggle {
-  position: fixed;
-  top: calc(var(--topnav-h) + 14px);
-  inset-inline-end: 18px;
-  z-index: 100;
+  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px;
+  padding: 3px;
   border: 1px solid var(--border);
   border-radius: 100px;
-  background: var(--card);
-  box-shadow: 0 2px 10px rgba(20, 33, 30, .08);
+  background: transparent;
   cursor: pointer;
   font-family: var(--font-mono);
-  font-size: .78rem;
+  font-size: .72rem;
   font-weight: 700;
   color: var(--muted);
   -webkit-tap-highlight-color: transparent;
@@ -1644,89 +1702,268 @@ html[data-theme="dark"] .theme-toggle__moon {
 .lang-toggle__option {
   position: relative;
   z-index: 2;
-  width: 34px;
+  width: 32px;
   text-align: center;
-  padding: 6px 0;
+  padding: 5px 0;
   border-radius: 100px;
   transition: color .2s ease;
 }
 
-.lang-toggle__sep {
-  position: relative;
-  z-index: 2;
-  opacity: .4;
-  font-weight: 400;
-}
-
 .lang-toggle__thumb {
   position: absolute;
-  top: 6px;
-  inset-inline-start: 6px;
-  width: 34px;
-  height: calc(100% - 12px);
+  top: 3px;
+  inset-inline-start: 3px;
+  width: 32px;
+  height: calc(100% - 6px);
   border-radius: 100px;
   background: var(--accent);
-  transition: inset-inline-start .25s cubic-bezier(.22, .61, .36, 1);
+  transition: transform .25s cubic-bezier(.22, .61, .36, 1);
   z-index: 1;
 }
 
-/* default (EN active): thumb sits under EN, which is the first option in DOM order regardless of dir */
-html[lang="en"] .lang-toggle__thumb {
-  inset-inline-start: 6px;
+/* EN is first in DOM order in both directions, so the thumb only ever
+   needs to travel one slot along the reading direction. */
+html[lang="fa"] .lang-toggle__thumb {
+  transform: translateX(32px);
 }
 
-html[lang="fa"] .lang-toggle__thumb {
-  inset-inline-start: calc(100% - 40px);
+html[dir="rtl"][lang="fa"] .lang-toggle__thumb {
+  transform: translateX(-32px);
 }
 
 html[lang="en"] .lang-toggle__option[data-lang-option="en"],
 html[lang="fa"] .lang-toggle__option[data-lang-option="fa"] {
-  color: #fff;
+  color: var(--on-accent);
 }
 
-@media (max-width:640px) {
-  :root {
-    --topnav-h: 50px;
-  }
+.download-cv {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 34px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: .8rem;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: background .2s ease, color .2s ease, border-color .2s ease;
+}
 
-  .theme-toggle {
-    top: calc(var(--topnav-h) + 10px);
-    inset-inline-start: 12px;
-    width: 38px;
-    height: 38px;
+.download-cv:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.download-cv svg {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 auto;
+}
+
+.topnav__link--cta {
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 16px;
+  border-radius: 100px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: .82rem;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: background .2s ease;
+}
+
+.topnav__link--cta:hover,
+.topnav__link--cta.is-active {
+  background: var(--accent-2);
+}
+
+/* Below ~1040px the bar can no longer hold every control at full width.
+   Labels drop first, then the brand, then the resume button — the two
+   controls a visitor actually needs (language, contact) always survive. */
+@media (max-width:1040px) {
+  .download-cv__label {
+    display: none;
   }
 
   .download-cv {
-    top: calc(var(--topnav-h) + 62px);
-    inset-inline-end: 12px;
-    min-height: 38px;
-    padding: 8px 12px;
-    font-size: .76rem;
-  }
-
-  .lang-toggle {
-    top: calc(var(--topnav-h) + 10px);
-    inset-inline-end: 12px;
-    font-size: .72rem;
-  }
-
-  .lang-toggle__option {
-    width: 30px;
-    padding: 5px 0;
-  }
-
-  .lang-toggle__thumb {
-    width: 30px;
-  }
-
-  html[lang="fa"] .lang-toggle__thumb {
-    inset-inline-start: calc(100% - 36px);
+    width: 34px;
+    padding: 0;
+    justify-content: center;
   }
 }
 
-/* .hero-intro already carries the top clearance the fixed toggles need
-   (see HERO INTRO block above) — .page keeps its normal 40px/24px padding
-   now that the hero sits between the nav and the page grid. */
+@media (max-width:760px) {
+  .topnav__brand {
+    display: none;
+  }
+
+  .topnav__inner {
+    padding: 0 14px;
+    gap: 10px;
+  }
+
+  .topnav__links a {
+    padding: 6px 10px;
+    font-size: .8rem;
+  }
+
+  .topnav__actions {
+    gap: 6px;
+  }
+}
+
+/* ============================================================
+   MOBILE SECTION MENU
+   Below ~620px the horizontal rail is squeezed to a sliver by the
+   action cluster, so the links move into a drop-down panel instead.
+   ============================================================ */
+.nav-menu-toggle {
+  display: none;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.nav-menu-toggle__bars {
+  display: grid;
+  gap: 4px;
+  width: 16px;
+}
+
+.nav-menu-toggle__bars i {
+  display: block;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transition: transform .25s ease, opacity .2s ease;
+}
+
+.nav-menu-toggle[aria-expanded="true"] {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.nav-menu-toggle[aria-expanded="true"] .nav-menu-toggle__bars i:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.nav-menu-toggle[aria-expanded="true"] .nav-menu-toggle__bars i:nth-child(2) {
+  opacity: 0;
+}
+
+.nav-menu-toggle[aria-expanded="true"] .nav-menu-toggle__bars i:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+@media (max-width:620px) {
+  .nav-menu-toggle {
+    display: grid;
+  }
+
+  .topnav__scroller {
+    position: absolute;
+    top: 100%;
+    inset-inline: 0;
+    flex: none;
+    overflow: hidden;
+    max-height: 0;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 14px 30px rgba(20, 33, 30, .14);
+    mask-image: none;
+    -webkit-mask-image: none;
+    transition: max-height .28s cubic-bezier(.22, .61, .36, 1);
+  }
+
+  .topnav__scroller.is-open {
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+
+  .topnav__links {
+    display: block;
+    width: auto;
+    padding: 8px 14px 14px;
+  }
+
+  .topnav__links li + li {
+    border-top: 1px solid var(--border);
+  }
+
+  .topnav__links a {
+    display: block;
+    padding: 13px 10px;
+    border-radius: 8px;
+    font-size: .95rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .topnav__scroller,
+  .nav-menu-toggle__bars i {
+    transition: none;
+  }
+}
+
+@media (max-width:560px) {
+
+  /* Icon-only from 1040px down; on a resume site the download stays
+     reachable from the bar rather than dropping out of it. */
+  .download-cv {
+    width: 32px;
+    height: 32px;
+  }
+
+  .lang-toggle {
+    font-size: .68rem;
+  }
+
+  .lang-toggle__option {
+    width: 27px;
+    padding: 4px 0;
+  }
+
+  .lang-toggle__thumb {
+    width: 27px;
+  }
+
+  html[lang="fa"] .lang-toggle__thumb {
+    transform: translateX(27px);
+  }
+
+  html[dir="rtl"][lang="fa"] .lang-toggle__thumb {
+    transform: translateX(-27px);
+  }
+
+  .theme-toggle,
+  .topnav__link--cta {
+    height: 32px;
+  }
+
+  .theme-toggle {
+    width: 32px;
+  }
+
+  .topnav__link--cta {
+    padding: 0 13px;
+    font-size: .78rem;
+  }
+}
+
 
 /* ============================================================
    DIRECTIONAL ICON MIRRORING
@@ -1738,11 +1975,11 @@ html[lang="fa"] .course-list__arrow {
 }
 
 html[lang="fa"] .btn-teacher svg {
-  transform: scaleX(1);
+  transform: scaleX(-1);
 }
 
 html[lang="en"] .btn-teacher svg {
-  transform: scaleX(-1);
+  transform: scaleX(1);
 }
 
 /* ============================================================
@@ -1982,8 +2219,8 @@ html[lang="en"] .btn-teacher svg {
    ============================================================ */
 .cert-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(min(190px, 100%), 1fr));
+  gap: 18px;
 }
 
 .cert-card {
@@ -2092,7 +2329,7 @@ html[lang="en"] .btn-teacher svg {
 
 @media (max-width:640px) {
   .cert-grid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(160px, 100%), 1fr));
     gap: 14px;
   }
 
@@ -2232,7 +2469,7 @@ html[lang="en"] .btn-teacher svg {
 
 .lightbox__close:hover {
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
   transform: rotate(90deg);
 }
 
@@ -2362,18 +2599,6 @@ html[dir="rtl"] .contact-card:not(.contact-card--location):hover {
   word-break: break-all;
 }
 
-/* Nav CTA link */
-.topnav__link--cta {
-  color: var(--accent) !important;
-  border: 1px solid rgba(15, 110, 91, .30) !important;
-}
-
-.topnav__link--cta:hover,
-.topnav__link--cta.is-active {
-  background: rgba(15, 110, 91, .12) !important;
-  border-color: var(--accent) !important;
-}
-
 /* Form */
 .contact-form {
   display: flex;
@@ -2450,7 +2675,7 @@ html[dir="rtl"] .contact-card:not(.contact-card--location):hover {
   border-radius: 100px;
   border: none;
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
   font-family: var(--font-fa);
   font-size: 1rem;
   font-weight: 700;
@@ -2566,11 +2791,19 @@ html[data-theme="dark"] .contact-card {
 
 @media print {
 
+  .topnav,
   .lang-toggle,
   .theme-toggle,
   .download-cv,
+  .nav-menu-toggle,
+  .list-toggle,
   .hero-intro {
     display: none !important;
+  }
+
+  /* collapsed bullets must all print */
+  [data-collapsible] li[hidden] {
+    display: list-item !important;
   }
 
   .page {
