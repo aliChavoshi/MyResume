@@ -1,0 +1,15 @@
+{
+  "name": "ali-chavoshi-resume",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Personal resume site for Ali Chavoshi, plus the PDF export tool.",
+  "scripts": {
+    "serve": "python -m http.server 5599",
+    "pdf": "node tools/export-resumes.cjs",
+    "pdf:en": "node tools/export-resumes.cjs en",
+    "pdf:fa": "node tools/export-resumes.cjs fa"
+  },
+  "devDependencies": {
+    "playwright": "^1.49.0"
+  }
+}

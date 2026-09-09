@@ -127,12 +127,6 @@ html[data-theme="dark"] .fog__blob {
   }
 }
 
-@media print {
-  .fog {
-    display: none !important;
-  }
-}
-
 /* ============================================================
    TOKENS
    ============================================================ */
@@ -677,12 +671,6 @@ body::after {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-@media print {
-  body::after {
-    display: none;
-  }
-}
-
 /* ============================================================
    SIDEBAR
    ============================================================ */
@@ -867,6 +855,10 @@ body::after {
   border-radius: 100px;
   background: rgba(255, 255, 255, .1);
   color: var(--sidebar-ink);
+  /* These are Latin product names with trailing punctuation ("C#"), which
+     bidi reorders to "#C" inside the Persian RTL layout. */
+  direction: ltr;
+  unicode-bidi: isolate;
 }
 
 .lang-list {
@@ -2783,59 +2775,45 @@ html[data-theme="dark"] .contact-card {
   background: var(--card);
 }
 
+/* ============================================================
+   PRINT / PDF
+   The screen layout is a two-column web page with a hero, a sticky
+   bar and an image gallery; poured onto A4 verbatim it ran to 13
+   pages, several of them holding a heading and nothing else. This
+   rebuilds it as a document: a compact masthead, then one flowing
+   column, with explicit break rules so a heading never separates
+   from what it introduces.
+   ============================================================ */
 @media print {
-  .contact-section {
-    display: none;
+
+  @page {
+    size: A4;
+    margin: 12mm 12mm 14mm;
   }
-}
 
-@media print {
-
+  /* ---- strip the interface ---- */
+  .fog,
+  .hero-intro,
   .topnav,
   .lang-toggle,
   .theme-toggle,
   .download-cv,
   .nav-menu-toggle,
   .list-toggle,
-  .hero-intro {
+  .contact-section,
+  .lightbox,
+  .avatar-wrap,
+  .block__icon,
+  .cert-card__thumb,
+  .course-list__arrow,
+  .timeline__dot,
+  body::after {
     display: none !important;
   }
 
-  /* collapsed bullets must all print */
+  /* everything collapsed, or still waiting on a scroll reveal, must print */
   [data-collapsible] li[hidden] {
     display: list-item !important;
-  }
-
-  .page {
-    max-width: none;
-    padding: 0;
-    gap: 18px;
-    grid-template-columns: 230px minmax(0, 1fr) !important;
-    align-items: start;
-    font-size: 11px;
-  }
-
-  .sidebar {
-    position: static;
-  }
-
-  .sidebar__inner {
-    padding: 20px 16px;
-  }
-
-  .avatar-wrap {
-    width: 104px;
-    height: 104px;
-    margin-bottom: 14px;
-  }
-
-  .sidebar__section {
-    margin-top: 18px;
-  }
-
-  .block {
-    padding: 18px;
-    margin-bottom: 16px;
   }
 
   .reveal,
@@ -2844,13 +2822,419 @@ html[data-theme="dark"] .contact-card {
     opacity: 1 !important;
     transform: none !important;
     animation: none !important;
+    transition: none !important;
   }
 
-  .project,
-  .timeline__entry,
-  .cert-card,
-  .edu-card {
+  html,
+  body {
+    background: #fff !important;
+    color: #14201C !important;
+    font-size: 10.2pt;
+    line-height: 1.5;
+  }
+
+  /* ---- one flowing column ---- */
+  .page {
+    display: block !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .content {
+    display: block !important;
+  }
+
+  /* ---- the profile card becomes a masthead ---- */
+  .sidebar {
+    position: static !important;
+    background: none !important;
+    color: inherit !important;
+    border: 0;
+    border-bottom: 1.5pt solid #0F6E5B;
+    border-radius: 0;
+    overflow: visible;
+    margin-bottom: 11pt;
+    padding-bottom: 7pt;
     break-inside: avoid;
+    break-after: avoid;
+  }
+
+  /* A4 is ~794px wide, so the max-width:920px block applies during print and
+     turns this into a centred column flex. Put it back to normal flow. */
+  .sidebar__inner {
+    display: block !important;
+    padding: 0 !important;
+    text-align: start !important;
+  }
+
+  .sidebar__name,
+  .sidebar__role,
+  .sidebar__role-fa,
+  .sidebar__heading {
+    text-align: start !important;
+  }
+
+  .sidebar__name {
+    font-size: 21pt;
+    line-height: 1.15;
+    color: #14201C !important;
+    margin-bottom: 2pt;
+  }
+
+  .sidebar__role,
+  .sidebar__role-fa {
+    display: inline;
+    font-size: 10.5pt;
+    color: #0F6E5B !important;
+  }
+
+  .sidebar__role::after {
+    content: " \00B7 ";
+    color: #7C8B85;
+  }
+
+  /* contact / skills / languages run as inline rows, not stacked blocks */
+  .sidebar__section {
+    margin: 5pt 0 0 !important;
+    break-inside: avoid;
+  }
+
+  .sidebar__heading {
+    display: none;
+  }
+
+  .sidebar__section .contact-list,
+  .sidebar__section .pill-list,
+  .sidebar__section .lang-list {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 3pt 14pt;
+    margin: 0;
+    border: 0;
+  }
+
+  .contact-list li,
+  .lang-list li {
+    display: flex !important;
+    width: auto !important;
+    justify-content: flex-start !important;
+    align-items: baseline;
+    gap: 4pt;
+    border: 0 !important;
+    padding: 0 !important;
+    font-size: 9.6pt;
+    color: #14201C !important;
+  }
+
+  .contact-list a,
+  .contact-list span,
+  .lang-list span {
+    color: #14201C !important;
+    font-size: 9.6pt;
+  }
+
+  /* Latin URLs, phone numbers and the email inside RTL copy: isolate them so
+     bidi does not drag trailing punctuation to the front. */
+  .contact-list a,
+  .contact-list [dir="ltr"] {
+    direction: ltr;
+    unicode-bidi: isolate;
+  }
+
+  .contact-list__icon {
+    display: none;
+  }
+
+  /* a bare "LinkedIn" tells a reader on paper nothing */
+  .contact-list a[href^="https://"] {
+    font-size: 0;
+  }
+
+  .contact-list a[href^="https://"]::after {
+    content: attr(href);
+    font-size: 9.2pt;
+    direction: ltr;
+    unicode-bidi: isolate;
+    word-break: break-all;
+  }
+
+  /* label/value pairs need a separator once they sit inline */
+  .lang-list li > span:first-child::after {
+    content: ":";
+    color: #4B5560;
+  }
+
+  .pill {
+    background: none !important;
+    color: #0F6E5B !important;
+    border: .5pt solid #B9D4CB;
+    padding: 1pt 6pt;
+    font-size: 9pt;
+  }
+
+  .lang-list__level {
+    color: #4B5560 !important;
+  }
+
+  /* ---- sections ---- */
+  .block {
+    background: none !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 0 10pt !important;
+  }
+
+  .block__title {
+    font-size: 12pt;
+    margin-bottom: 5pt;
+    padding-bottom: 2pt;
+    border-bottom: .75pt solid #CFE0DA;
+    color: #0F6E5B !important;
+    break-after: avoid;
+  }
+
+  /* the accent bar is absolutely positioned 18px below the title, which in
+     print lands on top of the first line of body copy */
+  .block__title span:not(.block__icon)::after {
+    display: none;
+  }
+
+  .block__subtitle {
+    font-size: 10.5pt;
+    margin: 7pt 0 3pt;
+    break-after: avoid;
+  }
+
+  /* A heading must never be the last thing on a page. */
+  h1,
+  h2,
+  h3,
+  .timeline__header,
+  .project__head {
+    break-after: avoid;
+    break-inside: avoid;
+  }
+
+  /* ---- experience ---- */
+  .timeline {
+    border: 0;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .timeline::before,
+  .timeline__entry::before {
+    display: none;
+  }
+
+  .timeline__entry {
+    padding-inline-start: 0 !important;
+    margin-bottom: 8pt;
+    break-inside: avoid;
+  }
+
+  .timeline__body {
+    padding: 0 !important;
+    background: none !important;
+    border: 0 !important;
+  }
+
+  .timeline__entry h3 {
+    font-size: 10.8pt;
+  }
+
+  .timeline__meta {
+    font-size: 9pt;
+    color: #4B5560 !important;
+    margin-bottom: 3pt;
+  }
+
+  .status-chip {
+    background: none !important;
+    border: .5pt solid #B9D4CB;
+    color: #0F6E5B !important;
+    padding: 0 5pt;
+    font-size: 8.5pt;
+  }
+
+  .status-chip i {
+    display: none;
+  }
+
+  .dash-list,
+  .check-list,
+  .dot-list {
+    gap: 2pt !important;
+  }
+
+  .dash-list li,
+  .check-list li,
+  .dot-list li {
+    font-size: 9.8pt;
+    line-height: 1.45;
+    color: #2A3733 !important;
+    break-inside: avoid;
+  }
+
+  /* an eleven-bullet role fits a wide A4 measure far better in two columns */
+  .dash-list--two-col {
+    columns: 2;
+    column-gap: 16pt;
+  }
+
+  .prose,
+  .about-text {
+    font-size: 9.9pt;
+    line-height: 1.55;
+    color: #2A3733 !important;
+  }
+
+  .badge,
+  .tech-badge {
+    background: none !important;
+    border: .5pt solid #CFE0DA;
+    color: #0F6E5B !important;
+    font-size: 8.6pt;
+    padding: 1pt 5pt;
+  }
+
+  .badge i {
+    display: none;
+  }
+
+  /* ---- teaching ---- */
+  .course-list {
+    margin: 6pt 0 !important;
+    gap: 1pt !important;
+  }
+
+  .course-list a {
+    background: none !important;
+    border: 0 !important;
+    padding: 1pt 0 !important;
+    font-size: 9.8pt;
+  }
+
+  .course-list__icon {
+    display: none;
+  }
+
+  .btn-teacher {
+    background: none !important;
+    color: #0F6E5B !important;
+    padding: 0 !important;
+    font-size: 9.6pt;
+    text-decoration: underline;
+  }
+
+  /* ---- projects ---- */
+  .project-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8pt !important;
+  }
+
+  .project {
+    background: none !important;
+    border: .5pt solid #DCE5E2 !important;
+    box-shadow: none !important;
+    padding: 6pt 8pt !important;
+    break-inside: avoid;
+  }
+
+  .project:last-child:nth-child(odd) {
+    grid-column: auto;
+  }
+
+  .project__head h3 {
+    font-size: 10.2pt;
+  }
+
+  /* a link is dead on paper, so print the destination instead of the label */
+  .project__link {
+    background: none !important;
+    border: 0 !important;
+    padding: 0 !important;
+    font-size: 8.4pt;
+    color: #4B5560 !important;
+  }
+
+  .project__link svg,
+  .project__link span {
+    display: none;
+  }
+
+  .project__link::after {
+    content: attr(href);
+    word-break: break-all;
+  }
+
+  .inline-link::after {
+    content: " (" attr(href) ")";
+    font-size: 8.4pt;
+    color: #4B5560;
+    word-break: break-all;
+  }
+
+  /* ---- education + technologies ---- */
+  .two-col {
+    display: grid !important;
+    grid-template-columns: 1fr 1.3fr !important;
+    gap: 12pt !important;
+    break-inside: avoid;
+  }
+
+  .tech-cat-list {
+    gap: 4pt !important;
+  }
+
+  .tech-cat-list__icon {
+    display: none;
+  }
+
+  .tech-cat-list li strong {
+    font-size: 9.6pt;
+  }
+
+  .tech-cat-list li span {
+    font-size: 9.3pt;
+  }
+
+  /* ---- certificates: titles only; the image frames were three blank pages ---- */
+  .cert-grid {
+    display: block !important;
+  }
+
+  .cert-card {
+    display: list-item;
+    list-style: disc;
+    margin-inline-start: 14pt;
+    background: none !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    break-inside: avoid;
+  }
+
+  .cert-card__title {
+    text-align: start;
+    font-size: 9.8pt;
+    font-weight: 500;
+  }
+
+  .footer {
+    padding: 8pt 0 0;
+    font-size: 8.5pt;
+    color: #4B5560 !important;
+    border-top: .5pt solid #DCE5E2;
+  }
+
+  html[lang="fa"] body {
+    line-height: 1.6;
   }
 }
 
