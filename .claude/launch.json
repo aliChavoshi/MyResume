@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "resume",
-      "runtimeExecutable": "py",
-      "runtimeArgs": ["-3", "-m", "http.server", "5599"],
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["--yes", "http-server", "-p", "5599", "-c-1"],
       "port": 5599
     }
   ]
