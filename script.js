@@ -1,813 +1,598 @@
+/* ==========================================================================
+   Core behaviour: language, theme, navigation, menus, disclosures, contact
+   form and certificates. Animation lives in js/motion.js, js/hero-scene.js
+   and js/journey.js; they react to the events dispatched here:
+     site:langchange   detail: { lang: "en" | "fa" }
+     site:themechange  detail: { theme: "light" | "dark" }
+   ========================================================================== */
 (function () {
    "use strict";
 
-   // Footer year
-   var yearEl = document.getElementById("year");
-   if (yearEl) yearEl.textContent = new Date().getFullYear();
+   const root = document.documentElement;
+   const LANG_KEY = "site-lang";
+   const THEME_KEY = "site-theme";
+   const params = new URLSearchParams(window.location.search);
+   const isPrint = params.get("print") === "1";
+   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-   // ============================================================
-   // CONTACT FORM — Formspree submit + lang-aware placeholders
-   // ============================================================
-   (function contactModule() {
-      var form = document.getElementById("contactForm");
-      var submitBtn = document.getElementById("cfSubmit");
-      var success = document.getElementById("cfSuccess");
-      var error = document.getElementById("cfError");
-      if (!form) return;
-
-      // Sync placeholder text with active language
-      window._syncContactPlaceholders = function (isFa) {
-         var inputs = Array.prototype.slice.call(form.querySelectorAll("[data-fa-placeholder]"));
-         inputs.forEach(function (el) {
-            el.setAttribute("placeholder", isFa ? el.getAttribute("data-fa-placeholder") : el.getAttribute("data-en-placeholder") || el.getAttribute("placeholder"));
-         });
-      };
-
-      // Cache English placeholders once
-      Array.prototype.slice.call(form.querySelectorAll("[data-fa-placeholder]")).forEach(function (el) {
-         if (!el.hasAttribute("data-en-placeholder")) {
-            el.setAttribute("data-en-placeholder", el.getAttribute("placeholder") || "");
+   const store = {
+      get(key) {
+         try {
+            return window.localStorage.getItem(key);
+         } catch (e) {
+            return null;
          }
+      },
+      set(key, value) {
+         try {
+            window.localStorage.setItem(key, value);
+         } catch (e) {
+            /* storage unavailable: the choice still applies for this visit */
+         }
+      },
+   };
+
+   const lang = () => (root.getAttribute("lang") === "fa" ? "fa" : "en");
+   const pick = (dict) => dict[lang()];
+   const emit = (name, detail) => document.dispatchEvent(new CustomEvent(name, { detail }));
+
+   window.Site = { lang, pick, isPrint, reduceMotion };
+
+   const yearEl = document.getElementById("year");
+   if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+
+   /* ------------------------------------------------------------------
+      LANGUAGE (EN default, LTR / FA, RTL)
+      Every [data-fa] element keeps its English markup in data-en-cache so
+      it can be restored exactly. Only leaf-level elements carry data-fa.
+      ------------------------------------------------------------------ */
+   const textEls = Array.from(document.body.querySelectorAll("[data-fa]"));
+   const attrSwaps = [
+      ["data-fa-alt", "alt"],
+      ["data-fa-aria", "aria-label"],
+      ["data-fa-placeholder", "placeholder"],
+      ["data-fa-title", "title"],
+   ].map(([source, target]) => ({
+      target,
+      source,
+      els: Array.from(document.querySelectorAll("[" + source + "]")),
+   }));
+   const metaDescription = document.querySelector('meta[name="description"]');
+
+   const enMarkup = new Map(textEls.map((el) => [el, el.innerHTML]));
+   let appliedLang = "en"; // the markup ships in English
+   attrSwaps.forEach(({ target, els }) => {
+      els.forEach((el) => {
+         if (!el.hasAttribute("data-en-" + target)) el.setAttribute("data-en-" + target, el.getAttribute(target) || "");
+      });
+   });
+   if (metaDescription) metaDescription.setAttribute("data-en-content", metaDescription.getAttribute("content"));
+
+   const langToggle = document.getElementById("langToggle");
+   const langToggleLabel = langToggle && langToggle.querySelector(".sr-only");
+   const themeToggle = document.getElementById("themeToggle");
+   const downloadLinks = Array.from(document.querySelectorAll(".js-download-cv"));
+
+   function applyLang(next) {
+      const fa = next === "fa";
+      root.setAttribute("lang", fa ? "fa" : "en");
+      root.setAttribute("dir", fa ? "rtl" : "ltr");
+
+      if (appliedLang !== (fa ? "fa" : "en")) {
+         textEls.forEach((el) => {
+            el.innerHTML = fa ? el.getAttribute("data-fa") : enMarkup.get(el);
+         });
+         appliedLang = fa ? "fa" : "en";
+      }
+      attrSwaps.forEach(({ target, source, els }) => {
+         els.forEach((el) => {
+            const value = el.getAttribute(fa ? source : "data-en-" + target);
+            if (value !== null) el.setAttribute(target, value);
+         });
+      });
+      if (metaDescription) {
+         metaDescription.setAttribute(
+            "content",
+            fa ? metaDescription.getAttribute("data-fa") : metaDescription.getAttribute("data-en-content"),
+         );
+      }
+
+      if (langToggleLabel) {
+         langToggleLabel.textContent = fa ? "تغییر زبان به انگلیسی" : "Switch language to Persian";
+      }
+
+      const file = fa ? "Ali-Chavoshi-Resume-FA.pdf" : "Ali-Chavoshi-Resume-EN.pdf";
+      downloadLinks.forEach((el) => {
+         el.setAttribute("href", "output/pdf/" + file);
+         el.setAttribute("download", file);
+         // The accessible name starts with the visible label (WCAG 2.5.3).
+         el.setAttribute("aria-label", fa ? "رزومه PDF، نسخه فارسی" : "Resume PDF, English version");
       });
 
-      form.addEventListener("submit", function (e) {
-         e.preventDefault();
+      syncThemeLabels();
+      store.set(LANG_KEY, fa ? "fa" : "en");
+      root.classList.remove("i18n-pending");
+      emit("site:langchange", { lang: fa ? "fa" : "en" });
+   }
 
-         // Basic client-side validation
-         var valid = true;
-         Array.prototype.slice.call(form.querySelectorAll("[required]")).forEach(function (el) {
-            if (!el.value.trim() || (el.type === "email" && !el.value.includes("@"))) {
-               el.setAttribute("aria-invalid", "true");
-               var err = el.parentNode.querySelector(".contact-form__err");
-               if (err) err.style.display = "block";
-               valid = false;
-            } else {
-               el.removeAttribute("aria-invalid");
-               var err = el.parentNode.querySelector(".contact-form__err");
-               if (err) err.style.display = "none";
-            }
+   function initialLang() {
+      const requested = params.get("lang");
+      if (requested === "fa" || requested === "en") return requested;
+      const saved = store.get(LANG_KEY);
+      return saved === "fa" ? "fa" : "en";
+   }
+
+   /* ------------------------------------------------------------------
+      THEME (saved choice, else the system preference; ?print=1 = light)
+      ------------------------------------------------------------------ */
+   function currentTheme() {
+      return root.getAttribute("data-theme") === "dark" ? "dark" : "light";
+   }
+
+   function syncThemeLabels() {
+      if (!themeToggle) return;
+      const dark = currentTheme() === "dark";
+      const label = dark
+         ? pick({ en: "Switch to light mode", fa: "تغییر به حالت روشن" })
+         : pick({ en: "Switch to dark mode", fa: "تغییر به حالت تاریک" });
+      themeToggle.setAttribute("aria-label", label);
+      themeToggle.setAttribute("title", label);
+      themeToggle.setAttribute("aria-pressed", String(dark));
+   }
+
+   function setTheme(theme, origin) {
+      const commit = () => {
+         if (theme === "dark") root.setAttribute("data-theme", "dark");
+         else root.removeAttribute("data-theme");
+         syncThemeLabels();
+         emit("site:themechange", { theme });
+      };
+
+      // A circular reveal from the toggle, where the browser supports it.
+      if (origin && document.startViewTransition && !reduceMotion.matches) {
+         const rect = origin.getBoundingClientRect();
+         const x = rect.left + rect.width / 2;
+         const y = rect.top + rect.height / 2;
+         const r = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
+         root.style.setProperty("--vt-x", x + "px");
+         root.style.setProperty("--vt-y", y + "px");
+         root.style.setProperty("--vt-r", r + "px");
+         document.startViewTransition(commit);
+      } else {
+         commit();
+      }
+   }
+
+   if (themeToggle) {
+      themeToggle.addEventListener("click", () => {
+         const next = currentTheme() === "dark" ? "light" : "dark";
+         store.set(THEME_KEY, next);
+         setTheme(next, themeToggle);
+      });
+   }
+
+   // Follow the OS while the visitor has not picked a theme themselves.
+   const darkQuery = window.matchMedia("(prefers-color-scheme: dark)");
+   darkQuery.addEventListener("change", (e) => {
+      if (isPrint || store.get(THEME_KEY)) return;
+      setTheme(e.matches ? "dark" : "light");
+   });
+
+   /* ------------------------------------------------------------------
+      COLLAPSIBLE LISTS: [data-collapsible="N"] keeps the first N items.
+      ------------------------------------------------------------------ */
+   const collapsibles = [];
+   const CHEVRON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.4 5.6 9l1.4-1.4 5 5 5-5L18.4 9z"/></svg>';
+
+   document.querySelectorAll("[data-collapsible]").forEach((list, index) => {
+      const keep = parseInt(list.getAttribute("data-collapsible"), 10) || 5;
+      const items = Array.from(list.children);
+      if (items.length <= keep) return;
+      const extra = items.slice(keep);
+      if (!list.id) list.id = "collapsible-" + index;
+
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "list-toggle";
+      btn.setAttribute("aria-controls", list.id);
+      const label = document.createElement("span");
+      btn.appendChild(label);
+      btn.insertAdjacentHTML("beforeend", CHEVRON);
+      list.after(btn);
+
+      const entry = { expanded: false };
+      entry.render = (animate) => {
+         extra.forEach((li, i) => {
+            li.hidden = !entry.expanded;
+            li.classList.toggle("is-entering", entry.expanded && animate);
+            li.style.setProperty("--i", i);
          });
+         btn.setAttribute("aria-expanded", String(entry.expanded));
+         label.textContent = entry.expanded
+            ? pick({ en: "Show less", fa: "نمایش کمتر" })
+            : pick({ en: "Show all " + items.length + " details", fa: "مشاهده همه " + items.length.toLocaleString("fa-IR") + " مورد" });
+      };
+      btn.addEventListener("click", () => {
+         entry.expanded = !entry.expanded;
+         entry.render(true);
+      });
+      entry.render(false);
+      collapsibles.push(entry);
+   });
 
-         if (!valid) return;
+   /* ------------------------------------------------------------------
+      DISCLOSURES: case-study "Engineering details"
+      ------------------------------------------------------------------ */
+   const disclosures = Array.from(document.querySelectorAll("[data-disclosure]")).map((btn) => {
+      const panel = document.getElementById(btn.getAttribute("aria-controls"));
+      const labelEl = btn.querySelector(".case__toggle-label");
+      const state = { open: false };
+      const render = () => {
+         btn.setAttribute("aria-expanded", String(state.open));
+         if (panel) {
+            panel.classList.toggle("is-open", state.open);
+            panel.inert = !state.open;
+            panel.setAttribute("aria-hidden", String(!state.open));
+         }
+         if (labelEl) {
+            const key = (lang() === "fa" ? "data-fa-" : "data-label-") + (state.open ? "close" : "open");
+            labelEl.textContent = labelEl.getAttribute(key);
+         }
+      };
+      btn.addEventListener("click", () => {
+         state.open = !state.open;
+         render();
+      });
+      render();
+      return render;
+   });
 
-         // Loading state
-         form.classList.add("contact-form--loading");
-         submitBtn.disabled = true;
+   /* ------------------------------------------------------------------
+      NAVIGATION: scrolled state, active section, sliding indicator,
+      section-aware document title.
+      ------------------------------------------------------------------ */
+   const nav = document.getElementById("siteNav");
+   const railList = document.querySelector(".nav__links ul");
+   const navLinks = Array.from(document.querySelectorAll("[data-nav]"));
+   let indicator = null;
+   let activeId = null;
+
+   if (railList) {
+      indicator = document.createElement("li");
+      indicator.className = "nav__indicator";
+      indicator.setAttribute("aria-hidden", "true");
+      railList.prepend(indicator);
+   }
+
+   function placeIndicator() {
+      if (!indicator) return;
+      const link = railList.querySelector('a[data-nav="' + activeId + '"]');
+      if (!link || !link.offsetParent) {
+         indicator.classList.remove("is-on");
+         return;
+      }
+      indicator.style.setProperty("--x", link.parentElement.offsetLeft + "px");
+      indicator.style.setProperty("--w", link.parentElement.offsetWidth + "px");
+      indicator.classList.add("is-on");
+   }
+
+   const TITLES = {
+      about: { en: "About", fa: "درباره من" },
+      skills: { en: "Skills", fa: "مهارت‌ها" },
+      architecture: { en: "Architecture", fa: "معماری" },
+      experience: { en: "Experience", fa: "سوابق کاری" },
+      teaching: { en: "Teaching", fa: "آموزش" },
+      projects: { en: "Open-Source Projects", fa: "پروژه‌های متن‌باز" },
+      certificates: { en: "Education & Certificates", fa: "تحصیلات و گواهینامه‌ها" },
+      contact: { en: "Contact", fa: "تماس" },
+   };
+
+   function updateTitle() {
+      const name = pick({ en: "Ali Chavoshi", fa: "علی چاوشی" });
+      const label = TITLES[activeId];
+      document.title = label
+         ? name + " | " + pick(label)
+         : name + " | " + pick({ en: "Senior Full-Stack Developer & Software Architect", fa: "توسعه‌دهنده ارشد و معمار نرم‌افزار" });
+   }
+
+   function setActive(id) {
+      if (id === activeId) return;
+      activeId = id;
+      navLinks.forEach((link) => {
+         const on = link.getAttribute("data-nav") === id;
+         link.classList.toggle("is-active", on);
+         if (on && link.closest(".nav__links, .menu")) link.setAttribute("aria-current", "location");
+         else link.removeAttribute("aria-current");
+      });
+      placeIndicator();
+      updateTitle();
+   }
+
+   if ("IntersectionObserver" in window) {
+      // Scrolled state: a 1px sentinel at the very top of the document.
+      const sentinel = document.createElement("div");
+      sentinel.setAttribute("aria-hidden", "true");
+      sentinel.style.cssText = "position:absolute;top:0;left:0;width:1px;height:24px;pointer-events:none";
+      document.body.prepend(sentinel);
+      new IntersectionObserver(([entry]) => {
+         nav && nav.classList.toggle("is-scrolled", !entry.isIntersecting);
+      }).observe(sentinel);
+
+      // Active section: whichever section crosses the middle band of the viewport.
+      const targets = [];
+      const seen = new Set();
+      navLinks.forEach((link) => {
+         const id = link.getAttribute("data-nav");
+         const el = document.getElementById(id);
+         if (el && !seen.has(id)) {
+            seen.add(id);
+            targets.push(el);
+         }
+      });
+      const hero = document.getElementById("hero-intro");
+      if (hero) targets.push(hero);
+      const sectionObserver = new IntersectionObserver(
+         (entries) => {
+            entries.forEach((entry) => {
+               if (entry.isIntersecting) setActive(entry.target.id === "hero-intro" ? null : entry.target.id);
+            });
+         },
+         { rootMargin: "-45% 0px -50% 0px" },
+      );
+      targets.forEach((el) => sectionObserver.observe(el));
+   }
+
+   window.addEventListener("resize", placeIndicator, { passive: true });
+   if (document.fonts && document.fonts.ready) document.fonts.ready.then(placeIndicator);
+
+   /* ------------------------------------------------------------------
+      MOBILE MENU
+      ------------------------------------------------------------------ */
+   const menuBtn = document.getElementById("navToggle");
+   const menu = document.getElementById("mobileMenu");
+   const inertWhenMenu = [document.getElementById("main"), document.querySelector(".footer"), document.querySelector(".skip-link")].filter(Boolean);
+
+   function setMenu(open, restoreFocus) {
+      if (!menuBtn || !menu) return;
+      menu.hidden = !open;
+      root.classList.toggle("menu-open", open);
+      menuBtn.setAttribute("aria-expanded", String(open));
+      menuBtn.setAttribute("aria-label", open ? pick({ en: "Close menu", fa: "بستن منو" }) : pick({ en: "Open menu", fa: "باز کردن منو" }));
+      inertWhenMenu.forEach((el) => (el.inert = open));
+      if (open) {
+         const first = menu.querySelector("a");
+         if (first) first.focus({ preventScroll: true });
+      } else if (restoreFocus) {
+         menuBtn.focus();
+      }
+   }
+
+   if (menuBtn && menu) {
+      menuBtn.addEventListener("click", () => setMenu(menuBtn.getAttribute("aria-expanded") !== "true"));
+      menu.addEventListener("click", (e) => {
+         if (e.target.closest("a")) setMenu(false);
+      });
+      document.addEventListener("keydown", (e) => {
+         if (e.key === "Escape" && menuBtn.getAttribute("aria-expanded") === "true") setMenu(false, true);
+      });
+      window.matchMedia("(min-width: 1200px)").addEventListener("change", (e) => {
+         if (e.matches) setMenu(false);
+      });
+   }
+
+   /* ------------------------------------------------------------------
+      CONTACT FORM (Formspree)
+      ------------------------------------------------------------------ */
+   (function contactForm() {
+      const form = document.getElementById("contactForm");
+      if (!form) return;
+      const submit = document.getElementById("cfSubmit");
+      const success = document.getElementById("cfSuccess");
+      const failure = document.getElementById("cfError");
+      const fields = Array.from(form.querySelectorAll("input[required], textarea[required]"));
+      const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+      const isValid = (el) => {
+         const value = el.value.trim();
+         if (!value) return false;
+         return el.type === "email" ? EMAIL.test(value) : true;
+      };
+
+      const mark = (el, ok) => {
+         const err = document.getElementById(el.getAttribute("aria-describedby"));
+         if (ok) el.removeAttribute("aria-invalid");
+         else el.setAttribute("aria-invalid", "true");
+         if (err) err.hidden = ok;
+      };
+
+      fields.forEach((el) => {
+         el.addEventListener("input", () => {
+            if (el.getAttribute("aria-invalid") === "true" && isValid(el)) mark(el, true);
+         });
+         el.addEventListener("blur", () => {
+            if (el.getAttribute("aria-invalid") === "true") mark(el, isValid(el));
+         });
+      });
+
+      form.addEventListener("submit", (e) => {
+         e.preventDefault();
          success.hidden = true;
-         error.hidden = true;
+         failure.hidden = true;
+
+         let firstInvalid = null;
+         fields.forEach((el) => {
+            const ok = isValid(el);
+            mark(el, ok);
+            if (!ok && !firstInvalid) firstInvalid = el;
+         });
+         if (firstInvalid) {
+            firstInvalid.focus();
+            return;
+         }
+
+         // Bots fill the hidden field; pretend it went through.
+         const trap = form.querySelector('[name="_gotcha"]');
+         if (trap && trap.value) {
+            form.reset();
+            success.hidden = false;
+            return;
+         }
+
+         form.classList.add("is-loading");
+         submit.disabled = true;
+         submit.setAttribute("aria-busy", "true");
+
+         const controller = "AbortController" in window ? new AbortController() : null;
+         const timer = controller ? window.setTimeout(() => controller.abort(), 15000) : 0;
 
          fetch(form.action, {
             method: "POST",
             body: new FormData(form),
             headers: { Accept: "application/json" },
+            signal: controller ? controller.signal : undefined,
          })
-            .then(function (res) {
-               form.classList.remove("contact-form--loading");
-               submitBtn.disabled = false;
-               if (res.ok) {
-                  form.reset();
-                  success.hidden = false;
-                  success.scrollIntoView({ behavior: "smooth", block: "nearest" });
-               } else {
-                  error.hidden = false;
-               }
+            .then((res) => {
+               if (!res.ok) throw new Error("HTTP " + res.status);
+               form.reset();
+               success.hidden = false;
+               success.scrollIntoView({ behavior: reduceMotion.matches ? "auto" : "smooth", block: "nearest" });
             })
-            .catch(function () {
-               form.classList.remove("contact-form--loading");
-               submitBtn.disabled = false;
-               error.hidden = false;
-            });
-      });
-
-      // Clear validation state on input
-      Array.prototype.slice.call(form.querySelectorAll("input, textarea")).forEach(function (el) {
-         el.addEventListener("input", function () {
-            el.removeAttribute("aria-invalid");
-            var err = el.parentNode.querySelector(".contact-form__err");
-            if (err) err.style.display = "none";
-         });
-      });
-   })();
-
-   // ============================================================
-   // COLLAPSIBLE LISTS — any [data-collapsible="N"] list is clipped to
-   // its first N items behind a toggle. A single role can carry a dozen
-   // bullets; showing them all turns the timeline into something the
-   // reader scrolls past instead of reads.
-   // ============================================================
-   (function collapsibleListsModule() {
-      var lists = Array.prototype.slice.call(document.querySelectorAll("[data-collapsible]"));
-      if (!lists.length) return;
-
-      var LABELS = {
-         more: { en: "Show all details", fa: "مشاهده همه موارد" },
-         less: { en: "Show less", fa: "نمایش کمتر" },
-      };
-
-      var CHEVRON =
-         '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.4 5.6 9l1.4-1.4 5 5 5-5L18.4 9z"/></svg>';
-
-      var registry = [];
-
-      lists.forEach(function (list) {
-         var keep = parseInt(list.getAttribute("data-collapsible"), 10) || 5;
-         var items = Array.prototype.slice.call(list.children);
-         if (items.length <= keep) return;
-
-         var hidden = items.slice(keep);
-
-         var btn = document.createElement("button");
-         btn.type = "button";
-         btn.className = "list-toggle";
-         var labelEl = document.createElement("span");
-         btn.appendChild(labelEl);
-         btn.insertAdjacentHTML("beforeend", CHEVRON);
-         list.parentNode.insertBefore(btn, list.nextSibling);
-
-         var entry = { expanded: false, labelEl: labelEl, btn: btn };
-
-         function render() {
-            // Hiding the overflow items outright keeps this correct in the
-            // multi-column layout, where a max-height clip cuts the second
-            // column at an arbitrary point.
-            hidden.forEach(function (li) {
-               li.hidden = !entry.expanded;
-            });
-            btn.setAttribute("aria-expanded", String(entry.expanded));
-            var lang = document.documentElement.getAttribute("lang") === "fa" ? "fa" : "en";
-            var text = LABELS[entry.expanded ? "less" : "more"][lang];
-            labelEl.textContent = text;
-            btn.setAttribute("aria-label", text);
-         }
-
-         entry.render = render;
-         render();
-         registry.push(entry);
-
-         btn.addEventListener("click", function () {
-            entry.expanded = !entry.expanded;
-            render();
-         });
-      });
-
-      // The toggle's own label has to follow a language swap.
-      window._refreshCollapsibles = function () {
-         registry.forEach(function (entry) {
-            entry.render();
-         });
-      };
-   })();
-
-   // ============================================================
-   // IMPACT STRIP — count-up animation + lang swap for labels
-   // ============================================================
-   (function impactModule() {
-      var strip = document.querySelector(".impact-strip");
-      if (!strip) return;
-
-      // Lang swap for impact labels
-      var items = Array.prototype.slice.call(strip.querySelectorAll(".impact-item"));
-      var numberEls = Array.prototype.slice.call(strip.querySelectorAll(".impact-item__number[data-count]"));
-
-      function updateImpactLang(isFa) {
-         items.forEach(function (item) {
-            var labelEl = item.querySelector(".impact-item__label");
-            var numEl = item.querySelector(".impact-item__number");
-            if (labelEl) {
-               labelEl.textContent = isFa ? item.getAttribute("data-fa-label") || labelEl.textContent : item.getAttribute("data-label") || labelEl.textContent;
-            }
-            if (numEl && numEl.hasAttribute("data-fa")) {
-               numEl.textContent = isFa ? numEl.getAttribute("data-fa") : numEl.getAttribute("data-en-cache") || numEl.textContent;
-            }
-         });
-      }
-
-      // Expose so langModule can call it after language switch
-      window._updateImpactLang = updateImpactLang;
-
-      // Count-up: runs once when strip becomes visible
-      var counted = false;
-
-      function countUp() {
-         if (counted) return;
-         counted = true;
-         numberEls.forEach(function (el) {
-            var target = parseInt(el.getAttribute("data-count"), 10);
-            var suffix = el.getAttribute("data-suffix") || "";
-            var duration = 1200;
-            var start = performance.now();
-
-            function tick(now) {
-               var elapsed = now - start;
-               var progress = Math.min(elapsed / duration, 1);
-               // ease-out cubic
-               var eased = 1 - Math.pow(1 - progress, 3);
-               var current = Math.round(eased * target);
-               el.textContent = current + suffix;
-               if (progress < 1) requestAnimationFrame(tick);
-            }
-
-            requestAnimationFrame(tick);
-         });
-      }
-
-      if (!("IntersectionObserver" in window)) {
-         countUp();
-         return;
-      }
-
-      var obs = new IntersectionObserver(
-         function (entries) {
-            entries.forEach(function (entry) {
-               if (entry.isIntersecting) {
-                  countUp();
-                  obs.unobserve(entry.target);
-               }
-            });
-         },
-         { threshold: 0.3 },
-      );
-
-      obs.observe(strip);
-   })();
-
-   // ============================================================
-   // MOBILE SECTION MENU — the link rail collapses into a drop-down
-   // below 620px, where the action cluster leaves it no usable width.
-   // ============================================================
-   (function navMenuModule() {
-      var btn = document.getElementById("navToggle");
-      var panel = document.getElementById("navLinks");
-      if (!btn || !panel) return;
-
-      var LABELS = {
-         open: { en: "Open section menu", fa: "باز کردن منو" },
-         close: { en: "Close section menu", fa: "بستن منو" },
-      };
-
-      function setOpen(open) {
-         btn.setAttribute("aria-expanded", String(open));
-         panel.classList.toggle("is-open", open);
-         var lang = document.documentElement.getAttribute("lang") === "fa" ? "fa" : "en";
-         btn.setAttribute("aria-label", LABELS[open ? "close" : "open"][lang]);
-      }
-
-      setOpen(false);
-      window._refreshNavMenuLang = function () {
-         setOpen(panel.classList.contains("is-open"));
-      };
-
-      btn.addEventListener("click", function (e) {
-         e.stopPropagation();
-         setOpen(btn.getAttribute("aria-expanded") !== "true");
-      });
-
-      // Jumping to a section should dismiss the panel covering it.
-      panel.addEventListener("click", function (e) {
-         if (e.target.closest("a")) setOpen(false);
-      });
-
-      document.addEventListener("click", function (e) {
-         if (!panel.contains(e.target) && !btn.contains(e.target)) setOpen(false);
-      });
-
-      document.addEventListener("keydown", function (e) {
-         if (e.key === "Escape" && btn.getAttribute("aria-expanded") === "true") {
-            setOpen(false);
-            btn.focus();
-         }
-      });
-
-      // Growing past the breakpoint restores the inline rail; leaving the
-      // panel flagged open would then apply .is-open styles to it.
-      window.addEventListener("resize", function () {
-         if (window.innerWidth > 620) setOpen(false);
-      });
-   })();
-
-   // ============================================================
-   // TOP NAV: smooth scroll, active-section highlight, scroll progress
-   // ============================================================
-   (function navModule() {
-      // Contact sits in the action cluster rather than the link rail, so scope
-      // this to the whole bar to keep it in the smooth-scroll + highlight set.
-      var navLinks = Array.prototype.slice.call(document.querySelectorAll(".topnav a[data-nav]"));
-      var progressBar = document.getElementById("scrollProgress");
-      var sections = navLinks
-         .map(function (link) {
-            var id = link.getAttribute("data-nav");
-            var el = document.getElementById(id);
-            return el ? { link: link, el: el } : null;
-         })
-         .filter(Boolean);
-
-      if (!sections.length && !progressBar) return;
-
-      // Smooth-scroll on click, accounting for the sticky nav height.
-      navLinks.forEach(function (link) {
-         link.addEventListener("click", function (e) {
-            var id = link.getAttribute("data-nav");
-            var target = document.getElementById(id);
-            if (!target) return;
-            e.preventDefault();
-            var nav = document.querySelector(".topnav");
-            var navHeight = nav ? nav.getBoundingClientRect().height : 0;
-            var top = target.getBoundingClientRect().top + window.pageYOffset - navHeight - 12;
-            window.scrollTo({ top: top, behavior: "smooth" });
-            if (window.history && window.history.pushState) {
-               window.history.pushState(null, "", "#" + id);
-            }
-         });
-      });
-
-      function updateActiveLink() {
-         var navEl = document.querySelector(".topnav");
-         var navHeight = navEl ? navEl.getBoundingClientRect().height : 0;
-         var probe = window.pageYOffset + navHeight + 24;
-
-         var activeIndex = -1;
-         sections.forEach(function (s, i) {
-            var top = s.el.getBoundingClientRect().top + window.pageYOffset;
-            if (probe >= top) activeIndex = i;
-         });
-
-         sections.forEach(function (s, i) {
-            if (i === activeIndex) {
-               s.link.classList.add("is-active");
-            } else {
-               s.link.classList.remove("is-active");
-            }
-         });
-      }
-
-      function updateProgress() {
-         if (!progressBar) return;
-         var scrollTop = window.pageYOffset;
-         var docHeight = document.documentElement.scrollHeight - window.innerHeight;
-         var pct = docHeight > 0 ? Math.min(100, Math.max(0, (scrollTop / docHeight) * 100)) : 0;
-         progressBar.style.width = pct + "%";
-      }
-
-      var ticking = false;
-      function onScroll() {
-         if (ticking) return;
-         ticking = true;
-         window.requestAnimationFrame(function () {
-            updateActiveLink();
-            updateProgress();
-            ticking = false;
-         });
-      }
-
-      window.addEventListener("scroll", onScroll, { passive: true });
-      window.addEventListener("resize", onScroll);
-      onScroll();
-   })();
-
-   // ============================================================
-   // AMBIENT FOG — scroll-linked parallax. Each .fog__layer drifts
-   // at its own speed/direction as the page scrolls (mouse wheel,
-   // trackpad, or touch — all fire the same native scroll event).
-   // ============================================================
-   (function fogParallaxModule() {
-      var layers = Array.prototype.slice.call(document.querySelectorAll(".fog__layer"));
-      if (!layers.length) return;
-
-      var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      if (reduceMotion) return; // leave the fog static, no parallax
-
-      var ticking = false;
-      function update() {
-         ticking = false;
-         var y = window.pageYOffset;
-         layers.forEach(function (layer) {
-            var speed = parseFloat(layer.getAttribute("data-speed")) || 0;
-            layer.style.transform = "translate3d(0, " + y * speed + "px, 0)";
-         });
-      }
-
-      function onFogScroll() {
-         if (ticking) return;
-         ticking = true;
-         window.requestAnimationFrame(update);
-      }
-
-      window.addEventListener("scroll", onFogScroll, { passive: true });
-      update();
-   })();
-
-   // ============================================================
-   // LANGUAGE TOGGLE (EN default, LTR / FA, RTL)
-   // ============================================================
-   var STORAGE_KEY = "site-lang";
-   var THEME_STORAGE_KEY = "site-theme";
-   var htmlEl = document.documentElement;
-   var toggleBtn = document.getElementById("langToggle");
-   var themeToggle = document.getElementById("themeToggle");
-   var downloadCvEls = Array.prototype.slice.call(document.querySelectorAll(".js-download-cv"));
-   var titleElement = document.querySelector("title");
-   var resumeSections = Array.prototype.slice.call(document.querySelectorAll("main section[id]"));
-   var activeTitleSection = null;
-   var titleLabels = {
-      about: { en: "About", fa: "درباره من" },
-      skills: { en: "Skills", fa: "مهارت‌ها" },
-      experience: { en: "Experience", fa: "سوابق کاری" },
-      teaching: { en: "Teaching", fa: "آموزش" },
-      projects: { en: "Open-Source Projects", fa: "پروژه‌های متن‌باز" },
-      education: { en: "Education", fa: "سوابق تحصیلی" },
-      tech: { en: "Technologies", fa: "فناوری‌ها" },
-      certificates: { en: "Certificates", fa: "گواهی‌ها" },
-   };
-
-   function updatePageTitle(sectionId) {
-      if (sectionId) activeTitleSection = sectionId;
-      if (!titleElement) return;
-
-      var lang = htmlEl.getAttribute("lang") === "fa" ? "fa" : "en";
-      var label = titleLabels[activeTitleSection];
-      titleElement.textContent = label ? (lang === "fa" ? "علی چاوشی | " : "Ali Chavoshi | ") + label[lang] : lang === "fa" ? "علی چاوشی | توسعه‌دهنده ارشد" : "Ali Chavoshi | Senior Full-Stack Developer";
-   }
-
-   // Elements whose *text content* swaps with data-fa / englishOriginal
-   var textSwapEls = Array.prototype.slice.call(document.querySelectorAll("[data-fa]"));
-   var imgSwapEls = Array.prototype.slice.call(document.querySelectorAll("[data-fa-alt]"));
-   var titleSwapEls = Array.prototype.slice.call(document.querySelectorAll("[data-fa-title]"));
-
-   // Cache each element's original English markup once, so we can restore it exactly.
-   textSwapEls.forEach(function (el) {
-      if (!el.hasAttribute("data-en-cache")) {
-         el.setAttribute("data-en-cache", el.innerHTML);
-      }
-   });
-   imgSwapEls.forEach(function (el) {
-      if (!el.hasAttribute("data-en-alt-cache")) {
-         el.setAttribute("data-en-alt-cache", el.getAttribute("alt") || "");
-      }
-   });
-   titleSwapEls.forEach(function (el) {
-      if (!el.hasAttribute("data-en-title-cache")) {
-         el.setAttribute("data-en-title-cache", el.getAttribute("title") || "");
-      }
-   });
-
-   function decodeEntities(str) {
-      var ta = document.createElement("textarea");
-      ta.innerHTML = str;
-      return ta.value;
-   }
-
-   function applyLang(lang) {
-      var isFa = lang === "fa";
-
-      htmlEl.setAttribute("lang", isFa ? "fa" : "en");
-      htmlEl.setAttribute("dir", isFa ? "rtl" : "ltr");
-
-      textSwapEls.forEach(function (el) {
-         if (isFa) {
-            var faMarkup = el.getAttribute("data-fa") || "";
-            // data-fa on block-level text stores HTML-escaped tags for <strong> emphasis;
-            // decode once so <strong>…</strong> renders as an element, not literal text.
-            el.innerHTML = faMarkup.indexOf("&lt;") !== -1 ? decodeEntities(faMarkup) : faMarkup;
-         } else {
-            el.innerHTML = el.getAttribute("data-en-cache") || el.innerHTML;
-         }
-      });
-
-      imgSwapEls.forEach(function (el) {
-         var attr = isFa ? "data-fa-alt" : "data-en-alt-cache";
-         var val = el.getAttribute(attr);
-         if (val !== null) el.setAttribute("alt", val);
-      });
-
-      titleSwapEls.forEach(function (el) {
-         var attr = isFa ? "data-fa-title" : "data-en-title-cache";
-         var val = el.getAttribute(attr);
-         if (val !== null) el.setAttribute("title", val);
-      });
-
-      if (toggleBtn) {
-         toggleBtn.setAttribute("aria-label", isFa ? "تغییر زبان به انگلیسی" : "Switch language to Persian");
-      }
-
-      if (themeToggle) {
-         var isDark = htmlEl.getAttribute("data-theme") === "dark";
-         var themeAction = isDark ? (isFa ? "تغییر به حالت روشن" : "Switch to light mode") : isFa ? "تغییر به حالت تاریک" : "Switch to dark mode";
-         themeToggle.setAttribute("aria-label", themeAction);
-         themeToggle.setAttribute("title", themeAction);
-      }
-
-      if (downloadCvEls.length) {
-         var resumeFile = isFa ? "Ali-Chavoshi-Resume-FA.pdf" : "Ali-Chavoshi-Resume-EN.pdf";
-         var resumeAction = isFa ? "دانلود رزومه فارسی به صورت PDF" : "Download English resume as PDF";
-         downloadCvEls.forEach(function (el) {
-            el.setAttribute("href", "output/pdf/" + resumeFile);
-            el.setAttribute("download", resumeFile);
-            el.setAttribute("aria-label", resumeAction);
-            el.setAttribute("title", resumeAction);
-         });
-      }
-
-      updatePageTitle();
-
-      // Swapped copy changes how many lines the kept items take, and the
-      // toggle's own label has to follow the language too.
-      if (window._refreshCollapsibles) window._refreshCollapsibles();
-      if (window._refreshNavMenuLang) window._refreshNavMenuLang();
-
-      try {
-         window.localStorage.setItem(STORAGE_KEY, isFa ? "fa" : "en");
-      } catch (e) {
-         /* localStorage unavailable — ignore, toggle still works for this session */
-      }
-   }
-
-   function getInitialLang() {
-      var requestedLang = new URLSearchParams(window.location.search).get("lang");
-      if (requestedLang === "fa" || requestedLang === "en") return requestedLang;
-      try {
-         var saved = window.localStorage.getItem(STORAGE_KEY);
-         if (saved === "fa" || saved === "en") return saved;
-      } catch (e) {
-         /* ignore */
-      }
-      return "en"; // default per spec
-   }
-
-   var currentLang = getInitialLang();
-   applyLang(currentLang);
-
-   if (toggleBtn) {
-      toggleBtn.addEventListener("click", function () {
-         currentLang = currentLang === "fa" ? "en" : "fa";
-         applyLang(currentLang);
-      });
-   }
-
-   // ============================================================
-   // HERO INTRO — word-by-word reveal over a 4s window, then a
-   // staged fade-in: CTA at 3.5s, stats panel ("dashboard") at 4s.
-   // Runs once on load, after the initial language has been applied.
-   // ============================================================
-   (function heroIntroModule() {
-      var title = document.querySelector(".hero-intro__title");
-      var subtitle = document.querySelector(".hero-intro__subtitle");
-      var actions = document.querySelector(".hero-intro__actions");
-      var stats = document.querySelector(".hero-intro__stats");
-      if (!title && !subtitle && !actions && !stats) return;
-
-      var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-      // This used to run for a full 4 seconds before the CTA and the stats
-      // existed, so every visitor — and every return visit — waited in front
-      // of a half-empty screen. It now resolves in well under a second, and
-      // replays only once per browsing session.
-      var seen = false;
-      try {
-         seen = window.sessionStorage.getItem("hero-intro-seen") === "1";
-      } catch (e) {
-         /* private mode — just play it */
-      }
-
-      if (reduceMotion || seen) {
-         if (title) title.classList.add("is-revealed", "is-instant");
-         if (subtitle) subtitle.classList.add("is-revealed", "is-instant");
-         if (actions) actions.classList.add("is-visible");
-         if (stats) stats.classList.add("is-visible");
-         return;
-      }
-
-      try {
-         window.sessionStorage.setItem("hero-intro-seen", "1");
-      } catch (e) {
-         /* ignore */
-      }
-
-      function wrapWords(el) {
-         var words = el.textContent.trim().split(/\s+/);
-         el.innerHTML = words
-            .map(function (w) {
-               return '<span class="word">' + w + "</span>";
+            .catch(() => {
+               failure.hidden = false;
             })
-            .join(" ");
-         return Array.prototype.slice.call(el.querySelectorAll(".word"));
-      }
-
-      var titleWords = title ? wrapWords(title) : [];
-      var subtitleWords = subtitle ? wrapWords(subtitle) : [];
-
-      // The headline carries the reveal; the subtitle trails it as a single
-      // block rather than word-by-word, so the eye is not asked to track two
-      // separate crawls at once.
-      var TITLE_WINDOW_MS = 560;
-      titleWords.forEach(function (w, i) {
-         var delay = titleWords.length > 1 ? (i / (titleWords.length - 1)) * TITLE_WINDOW_MS : 0;
-         w.style.transitionDelay = delay + "ms";
+            .finally(() => {
+               window.clearTimeout(timer);
+               form.classList.remove("is-loading");
+               submit.disabled = false;
+               submit.removeAttribute("aria-busy");
+            });
       });
-      subtitleWords.forEach(function (w) {
-         w.style.transitionDelay = "420ms";
-      });
-
-      // Two rAFs so the browser paints the initial (hidden) state first,
-      // guaranteeing the CSS transition actually fires.
-      window.requestAnimationFrame(function () {
-         window.requestAnimationFrame(function () {
-            if (title) title.classList.add("is-revealed");
-            if (subtitle) subtitle.classList.add("is-revealed");
-         });
-      });
-
-      if (actions) {
-         window.setTimeout(function () {
-            actions.classList.add("is-visible");
-         }, 520);
-      }
-      if (stats) {
-         window.setTimeout(function () {
-            stats.classList.add("is-visible");
-         }, 660);
-      }
    })();
 
-   // ============================================================
-   // COLOR THEME — starts from the saved choice or system preference.
-   // The small inline script in <head> applies this before first paint.
-   // ============================================================
-   function applyTheme(theme) {
-      var isDark = theme === "dark";
-      if (isDark) htmlEl.setAttribute("data-theme", "dark");
-      else htmlEl.removeAttribute("data-theme");
+   /* ------------------------------------------------------------------
+      COPY EMAIL
+      ------------------------------------------------------------------ */
+   (function copyEmail() {
+      const btn = document.getElementById("copyEmail");
+      const status = document.getElementById("copyStatus");
+      if (!btn) return;
+      let timer = 0;
 
-      if (themeToggle) {
-         var isFa = htmlEl.getAttribute("lang") === "fa";
-         var themeAction = isDark ? (isFa ? "تغییر به حالت روشن" : "Switch to light mode") : isFa ? "تغییر به حالت تاریک" : "Switch to dark mode";
-         themeToggle.setAttribute("aria-label", themeAction);
-         themeToggle.setAttribute("title", themeAction);
-         themeToggle.setAttribute("aria-pressed", String(isDark));
-      }
-   }
-
-   function getInitialTheme() {
-      if (new URLSearchParams(window.location.search).get("print") === "1") return "light";
-      try {
-         var saved = window.localStorage.getItem(THEME_STORAGE_KEY);
-         if (saved === "dark" || saved === "light") return saved;
-      } catch (e) {
-         /* ignore */
-      }
-      return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-   }
-
-   var currentTheme = getInitialTheme();
-   applyTheme(currentTheme);
-
-   if (themeToggle) {
-      themeToggle.addEventListener("click", function () {
-         currentTheme = currentTheme === "dark" ? "light" : "dark";
-         applyTheme(currentTheme);
+      const fallbackCopy = (text) => {
+         const ta = document.createElement("textarea");
+         ta.value = text;
+         ta.setAttribute("readonly", "");
+         ta.style.cssText = "position:fixed;opacity:0;pointer-events:none";
+         document.body.appendChild(ta);
+         ta.select();
+         let ok = false;
          try {
-            window.localStorage.setItem(THEME_STORAGE_KEY, currentTheme);
+            ok = document.execCommand("copy");
          } catch (e) {
-            /* localStorage unavailable — ignore */
+            ok = false;
          }
+         ta.remove();
+         return ok ? Promise.resolve() : Promise.reject();
+      };
+
+      btn.addEventListener("click", () => {
+         const text = btn.getAttribute("data-copy");
+         const attempt = navigator.clipboard && window.isSecureContext ? navigator.clipboard.writeText(text) : fallbackCopy(text);
+         attempt
+            .then(() => {
+               btn.classList.add("is-copied");
+               if (status) status.textContent = pick({ en: "Email address copied", fa: "آدرس ایمیل کپی شد" });
+               window.clearTimeout(timer);
+               timer = window.setTimeout(() => {
+                  btn.classList.remove("is-copied");
+                  if (status) status.textContent = "";
+               }, 2000);
+            })
+            .catch(() => {
+               if (status) status.textContent = pick({ en: "Copy failed. The address is " + text, fa: "کپی انجام نشد. آدرس: " + text });
+            });
       });
-   }
+   })();
 
-   // Keep the browser-tab title in step with the section a reader is viewing.
-   var titleScrollFrame = null;
-   function setTitleFromScrollPosition() {
-      titleScrollFrame = null;
-      var currentSection = resumeSections[0];
-      resumeSections.forEach(function (section) {
-         if (section.getBoundingClientRect().top <= 180) currentSection = section;
-      });
-      if (currentSection) updatePageTitle(currentSection.id);
-   }
+   /* ------------------------------------------------------------------
+      CERTIFICATES: tiles with a scan become buttons that open a dialog.
+      ------------------------------------------------------------------ */
+   (function certificates() {
+      const dialog = document.getElementById("certLightbox");
+      const img = document.getElementById("certLightboxImg");
+      const title = document.getElementById("certLightboxTitle");
+      if (!dialog || typeof dialog.showModal !== "function") return;
+      let current = null;
 
-   function requestTitleUpdate() {
-      if (titleScrollFrame !== null) return;
-      titleScrollFrame = window.requestAnimationFrame(setTitleFromScrollPosition);
-   }
+      const titleFor = (card) => card.getAttribute(lang() === "fa" ? "data-cert-title-fa" : "data-cert-title-en") || "";
 
-   window.addEventListener("scroll", requestTitleUpdate, { passive: true });
-   window.addEventListener("resize", requestTitleUpdate);
-   requestTitleUpdate();
+      const open = (card) => {
+         current = card;
+         title.textContent = titleFor(card);
+         img.src = card.getAttribute("data-cert-img");
+         img.alt = titleFor(card);
+         dialog.showModal();
+      };
 
-   // ============================================================
-   // Scroll-reveal: fade + rise each .reveal block into view once.
-   // Respects prefers-reduced-motion (handled purely in CSS as well).
-   // ============================================================
-   var revealEls = Array.prototype.slice.call(document.querySelectorAll(".reveal"));
-   if (!revealEls.length) return;
-
-   if (!("IntersectionObserver" in window)) {
-      revealEls.forEach(function (el) {
-         el.classList.add("is-visible");
-      });
-      return;
-   }
-
-   var observer = new IntersectionObserver(
-      function (entries) {
-         entries.forEach(function (entry) {
-            if (entry.isIntersecting) {
-               entry.target.classList.add("is-visible");
-               observer.unobserve(entry.target);
+      document.querySelectorAll(".cert-card").forEach((card) => {
+         const src = (card.getAttribute("data-cert-img") || "").trim();
+         if (!src) return;
+         const thumb = document.createElement("img");
+         thumb.className = "cert-card__thumb";
+         thumb.src = src;
+         thumb.alt = "";
+         thumb.loading = "lazy";
+         thumb.decoding = "async";
+         thumb.addEventListener("error", () => {
+            thumb.remove();
+            card.classList.remove("has-image");
+            card.removeAttribute("role");
+            card.removeAttribute("tabindex");
+         });
+         card.prepend(thumb);
+         card.classList.add("has-image");
+         card.setAttribute("role", "button");
+         card.setAttribute("tabindex", "0");
+         card.setAttribute("aria-haspopup", "dialog");
+         card.addEventListener("click", () => card.classList.contains("has-image") && open(card));
+         card.addEventListener("keydown", (e) => {
+            if ((e.key === "Enter" || e.key === " ") && card.classList.contains("has-image")) {
+               e.preventDefault();
+               open(card);
             }
          });
-      },
-      {
-         root: null,
-         rootMargin: "0px 0px -10% 0px",
-         threshold: 0.12,
-      },
-   );
-
-   revealEls.forEach(function (el) {
-      observer.observe(el);
-   });
-
-   // ============================================================
-   // CERTIFICATE GALLERY + LIGHTBOX (MODAL)
-   // ============================================================
-   var certCards = Array.prototype.slice.call(document.querySelectorAll(".cert-card"));
-   var lightbox = document.getElementById("certLightbox");
-   var lightboxImg = document.getElementById("certLightboxImg");
-   var lightboxTitle = document.getElementById("certLightboxTitle");
-
-   // Placeholder images (cer-N.jpg that don't exist yet) hide the broken
-   // icon and keep the elegant placeholder visible instead.
-   var certImgs = Array.prototype.slice.call(document.querySelectorAll(".cert-card__thumb img"));
-   certImgs.forEach(function (img) {
-      img.addEventListener("load", function () {
-         img.setAttribute("data-loaded", "true");
-      });
-      img.addEventListener("error", function () {
-         img.style.display = "none";
-      });
-   });
-
-   function setLightboxTitle(card) {
-      if (!lightboxTitle || !card) return;
-      var isFa = currentLang === "fa";
-      var key = isFa ? "data-cert-title-fa" : "data-cert-title-en";
-      lightboxTitle.innerHTML = card.getAttribute(key) || "";
-   }
-
-   function openLightbox(card) {
-      if (!lightbox || !card) return;
-      var src = card.getAttribute("data-cert-img");
-      if (!src) return;
-
-      lightboxImg.setAttribute("src", src);
-      lightboxImg.setAttribute("alt", "");
-      setLightboxTitle(card);
-      lightbox.classList.add("is-open");
-      lightbox.setAttribute("aria-hidden", "false");
-      document.body.classList.add("lightbox-open");
-
-      var closeBtn = lightbox.querySelector("[data-close-lightbox]");
-      if (closeBtn && closeBtn.tagName === "BUTTON") closeBtn.focus();
-   }
-
-   function closeLightbox() {
-      if (!lightbox) return;
-      lightbox.classList.remove("is-open");
-      lightbox.setAttribute("aria-hidden", "true");
-      document.body.classList.remove("lightbox-open");
-      lightboxImg.setAttribute("src", "");
-      // return focus to the card that opened the modal
-      if (lastCard) lastCard.focus();
-   }
-   var lastCard = null;
-
-   if (certCards.length && lightbox) {
-      certCards.forEach(function (card) {
-         function requestOpen(e) {
-            // ignore clicks that are just keyboard-triggered synthetic events
-            if (e && e.type === "keydown" && e.key !== "Enter" && e.key !== " ") return;
-            lastCard = card;
-            openLightbox(card);
-            if (e && e.type === "keydown") e.preventDefault();
-         }
-         card.addEventListener("click", requestOpen);
-         card.addEventListener("keydown", requestOpen);
       });
 
-      lightbox.querySelectorAll("[data-close-lightbox]").forEach(function (el) {
-         el.addEventListener("click", closeLightbox);
+      dialog.querySelectorAll("[data-close-lightbox]").forEach((btn) => btn.addEventListener("click", () => dialog.close()));
+      dialog.addEventListener("click", (e) => {
+         if (e.target === dialog) dialog.close();
       });
-
-      document.addEventListener("keydown", function (e) {
-         if (e.key === "Escape") closeLightbox();
+      dialog.addEventListener("close", () => {
+         img.removeAttribute("src");
       });
-   }
-
-   // When the language changes while a modal is open, refresh the title.
-   if (toggleBtn && lightbox) {
-      toggleBtn.addEventListener("click", function () {
-         if (lightbox.classList.contains("is-open") && lastCard) {
-            setLightboxTitle(lastCard);
+      document.addEventListener("site:langchange", () => {
+         if (dialog.open && current) {
+            title.textContent = titleFor(current);
+            img.alt = titleFor(current);
          }
       });
+   })();
+
+   /* ------------------------------------------------------------------
+      Boot: language last, so every module above re-labels itself.
+      ------------------------------------------------------------------ */
+   document.addEventListener("site:langchange", () => {
+      collapsibles.forEach((entry) => entry.render(false));
+      disclosures.forEach((render) => render());
+      if (menuBtn) menuBtn.setAttribute("aria-label", menuBtn.getAttribute("aria-expanded") === "true" ? pick({ en: "Close menu", fa: "بستن منو" }) : pick({ en: "Open menu", fa: "باز کردن منو" }));
+      updateTitle();
+      window.requestAnimationFrame(placeIndicator);
+   });
+
+   if (langToggle) {
+      langToggle.addEventListener("click", () => applyLang(lang() === "fa" ? "en" : "fa"));
    }
+
+   applyLang(initialLang());
+   syncThemeLabels();
 })();
