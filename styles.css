@@ -2306,6 +2306,615 @@ html[lang="fa"] .flow__caption {
   }
 }
 
+/* ---------- Line monitoring & Andon (Iskra). State classes come from
+   js/line-monitor.js: .is-stopped (line halted), .is-alert (SMS sent),
+   .is-defect (a part is rejected at station 4). ---------- */
+.monitor {
+  margin-top: 28px;
+  padding: 22px 20px 16px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.monitor__board {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
+  gap: 14px 18px;
+  align-items: end;
+  padding-bottom: 18px;
+  border-bottom: 1px dashed var(--line-strong);
+}
+
+.kpi {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.kpi__label {
+  font-size: 12.5px;
+  line-height: 1.3;
+  color: var(--ink-3);
+}
+
+.kpi__bar {
+  position: relative;
+  display: block;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.kpi__fill {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--accent);
+  transform: scaleX(var(--v, .5));
+  transform-origin: 0 50%;
+  transition: transform 900ms var(--ease-out);
+}
+
+html[dir="rtl"] .kpi__fill {
+  transform-origin: 100% 50%;
+}
+
+.kpi--down .kpi__fill {
+  background: var(--danger);
+}
+
+.kpi--waste .kpi__fill {
+  background: var(--ink-3);
+}
+
+.kpi__limit {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  inset-inline-start: 30%;
+  width: 2px;
+  border-radius: 1px;
+  background: var(--danger);
+}
+
+.sms {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 196px;
+}
+
+.sms__phone {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  border: 1px solid var(--line-strong);
+  color: var(--ink-2);
+  transition: color var(--dur-s), border-color var(--dur-s);
+}
+
+.sms__phone svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.sms__msg {
+  display: grid;
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: var(--danger-soft);
+  font-size: 12.5px;
+  line-height: 1.3;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity var(--dur-m) var(--ease-out), transform var(--dur-m) var(--ease-out);
+}
+
+.sms__msg strong {
+  font: 600 10.5px/1.3 var(--font-mono);
+  letter-spacing: .06em;
+  color: var(--danger);
+}
+
+.monitor.is-alert .sms__msg {
+  opacity: 1;
+  transform: none;
+}
+
+.monitor.is-alert .sms__phone {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+.line {
+  position: relative;
+  margin-top: 20px;
+}
+
+.line__belt {
+  position: absolute;
+  top: 36px;
+  height: 12px;
+  inset-inline: 12.5%;
+  overflow: hidden;
+}
+
+.line__belt::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  inset-inline: 0;
+  height: 2px;
+  margin-top: -1px;
+  background: var(--line-strong);
+}
+
+.line__parts {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  inset-inline-start: -64px;
+  width: calc(100% + 128px);
+  background: linear-gradient(90deg, var(--accent) 0 12px, transparent 12px) 0 50% / 64px 12px repeat-x;
+}
+
+.line__defect {
+  position: absolute;
+  z-index: 2;
+  top: 36px;
+  inset-inline-start: calc(87.5% - 6px);
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  background: var(--accent);
+  opacity: 0;
+}
+
+.line__stations {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.mst {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.mst__light {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+  transition: background-color var(--dur-s), box-shadow var(--dur-s);
+}
+
+.mst__machine {
+  position: relative;
+  width: 64px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink-2);
+  overflow: hidden;
+  transition: border-color var(--dur-s), color var(--dur-s);
+}
+
+.mst__machine>svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+
+.mst__name {
+  margin-top: 2px;
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.mst__feat {
+  max-width: 17ch;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--ink-3);
+  transition: color var(--dur-s);
+}
+
+/* station 1: press, with the estimated mold life as a ring */
+.mst__head {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  width: 26px;
+  height: 10px;
+  margin-left: -13px;
+  border-radius: 3px;
+  background: var(--ink-3);
+}
+
+.mst--press .mst__machine::after {
+  content: "";
+  position: absolute;
+  bottom: 7px;
+  left: 50%;
+  width: 32px;
+  height: 6px;
+  margin-left: -16px;
+  border-radius: 2px;
+  background: var(--line-strong);
+}
+
+.mst__machine>.mst__ring {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 14px;
+  height: 14px;
+}
+
+.mst__ring circle,
+.mst__ring path {
+  fill: none;
+  stroke-width: 3;
+}
+
+.mst__ring circle {
+  stroke: var(--line-strong);
+}
+
+.mst__ring path {
+  stroke: var(--accent);
+  stroke-dasharray: 1;
+  stroke-dashoffset: calc(1 - var(--mold, .35));
+  transition: stroke-dashoffset .6s var(--ease-out);
+}
+
+/* station 2: tablet playing a training video */
+.mst__machine--tablet {
+  width: 60px;
+  height: 44px;
+  border-radius: 9px;
+  border: 3px solid var(--ink-3);
+  background: var(--surface-2);
+}
+
+.mst__play {
+  width: 0;
+  height: 0;
+  margin-left: 3px;
+  border-style: solid;
+  border-width: 7px 0 7px 11px;
+  border-color: transparent transparent transparent var(--accent);
+}
+
+.mst__progress {
+  position: absolute;
+  left: 5px;
+  right: 5px;
+  bottom: 4px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--accent);
+  transform: scaleX(.4);
+  transform-origin: 0 50%;
+}
+
+/* station 3: Andon */
+.mst__machine>.mst__gear {
+  width: 30px;
+  height: 30px;
+}
+
+.mst__teeth {
+  fill: none !important;
+  stroke: currentColor;
+  stroke-width: 4;
+  stroke-dasharray: 3.2 2.3;
+}
+
+.monitor.is-stopped .mst__light {
+  background: var(--ink-3);
+  box-shadow: 0 0 0 4px var(--line);
+}
+
+.monitor.is-stopped .mst--andon .mst__light {
+  background: var(--danger);
+  box-shadow: 0 0 0 5px var(--danger-soft);
+}
+
+.monitor.is-stopped .mst--andon .mst__machine {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.monitor.is-stopped .mst--andon .mst__feat {
+  color: var(--danger);
+}
+
+@media (max-width: 639px) {
+  .monitor__board {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sms {
+    grid-column: 1 / -1;
+  }
+
+  .line__belt,
+  .line__defect {
+    display: none;
+  }
+
+  .line__stations {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 20px;
+  }
+}
+
+/* ---------- Integrated ERP hub (Mehrad Kavir) ---------- */
+.erp {
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 16px 28px;
+  align-items: center;
+  padding: 20px 24px 16px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--line);
+  background:
+    radial-gradient(55% 70% at 30% 50%, var(--accent-soft), transparent 70%),
+    var(--surface);
+  overflow: hidden;
+}
+
+.hub {
+  max-width: 440px;
+  margin-inline: auto;
+}
+
+.hub__ring {
+  fill: none;
+  stroke: var(--line-strong);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 6;
+}
+
+.hub__spoke {
+  fill: none;
+  stroke: var(--line-strong);
+  stroke-width: 1.25;
+}
+
+.hub__core {
+  fill: var(--accent-soft);
+  stroke: var(--accent);
+  stroke-width: 1.5;
+}
+
+.hub__wave {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.dia .hub__core-label {
+  fill: var(--ink);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.dia .hub__core-sub {
+  fill: var(--ink-3);
+  font-size: 9.5px;
+}
+
+.hub__node circle {
+  fill: var(--surface);
+  stroke: var(--line-strong);
+  stroke-width: 1.5;
+}
+
+.hub__node path {
+  fill: var(--ink-2);
+}
+
+.dia .hub__label {
+  fill: var(--ink);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+html[lang="fa"] .dia .hub__label {
+  font-family: var(--font-fa);
+  font-size: 13px;
+}
+
+.hub__info {
+  fill: var(--accent);
+  opacity: 0;
+  offset-rotate: 0deg;
+}
+
+.hub__info--0 {
+  offset-path: path("M220 94V144");
+}
+
+.hub__info--1 {
+  offset-path: path("M311.3 160.3L263.7 175.8");
+}
+
+.hub__info--2 {
+  offset-path: path("M276.4 267.7L247 227.2");
+}
+
+.hub__info--3 {
+  offset-path: path("M163.6 267.7L193 227.2");
+}
+
+.hub__info--4 {
+  offset-path: path("M128.7 160.3L176.3 175.8");
+}
+
+.hub__item {
+  offset-path: path("M220 72A118 118 0 1 1 220 308A118 118 0 1 1 220 72");
+  offset-rotate: 0deg;
+}
+
+/* still frame: one raw-material batch before production, one finished batch after */
+.hub__item--a {
+  offset-distance: 30%;
+}
+
+.hub__item--b {
+  offset-distance: 70%;
+}
+
+.hub__mat {
+  fill: var(--ink-2);
+}
+
+.hub__good {
+  fill: var(--accent);
+  stroke: var(--surface);
+  stroke-width: 2;
+}
+
+.hub__item--a .hub__good,
+.hub__item--b .hub__mat {
+  opacity: 0;
+}
+
+.erp__side {
+  display: grid;
+  gap: 14px;
+  align-content: center;
+}
+
+.erp__key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  font-size: 13.5px;
+  color: var(--ink-2);
+}
+
+.erp__key li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.erp__swatch {
+  display: inline-block;
+  flex: none;
+}
+
+.erp__swatch--info {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.erp__swatch--mat {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  background: var(--ink-2);
+}
+
+.erp__swatch--good {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.erp__note {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--ink-3);
+}
+
+.erp__apps-title {
+  margin-top: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-3);
+}
+
+.erp__apps {
+  display: grid;
+  gap: 8px;
+}
+
+.erp__app {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  font-size: 14.5px;
+  font-weight: 550;
+}
+
+.erp__sync {
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.erp__caption {
+  grid-column: 1 / -1;
+  margin-top: 4px;
+}
+
+@media (max-width: 759px) {
+  .erp {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 16px;
+  }
+
+  /* the hub is drawn at ~65% scale on phones; keep labels legible */
+  .dia .hub__label {
+    font-size: 16px;
+  }
+
+  html[lang="fa"] .dia .hub__label {
+    font-size: 17px;
+  }
+
+  .dia .hub__core-label {
+    font-size: 22px;
+  }
+}
+
+
 /* ==========================================================================
    TEACHING
    ========================================================================== */
@@ -4527,6 +5136,359 @@ html[lang="fa"] .contact__title {
     }
   }
 
+  /* ---- line monitoring & Andon ---- */
+  .line__parts {
+    animation: belt-run 1.1s linear infinite;
+  }
+
+  @keyframes belt-run {
+    to {
+      transform: translateX(calc(64px * var(--dir)));
+    }
+  }
+
+  .mst__head {
+    animation: press-strike 1.1s var(--ease-in-out) infinite;
+  }
+
+  @keyframes press-strike {
+
+    0%,
+    60%,
+    100% {
+      transform: translateY(0);
+    }
+
+    28% {
+      transform: translateY(16px);
+    }
+  }
+
+  .mst__gear {
+    animation: spin 2.6s linear infinite;
+  }
+
+  .mst__progress {
+    animation: video-progress 6s linear infinite;
+  }
+
+  @keyframes video-progress {
+    from {
+      transform: scaleX(0);
+    }
+
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  .monitor.is-stopped .line__parts,
+  .monitor.is-stopped .mst__head,
+  .monitor.is-stopped .mst__gear,
+  .monitor.is-stopped .mst__progress {
+    animation-play-state: paused;
+  }
+
+  .monitor.is-stopped .mst--andon .mst__light {
+    animation: andon-blink 1s steps(1) infinite;
+  }
+
+  @keyframes andon-blink {
+    50% {
+      opacity: .35;
+    }
+  }
+
+  .monitor.is-alert .sms__phone {
+    animation: phone-buzz 600ms var(--ease-in-out) 2;
+  }
+
+  @keyframes phone-buzz {
+
+    0%,
+    100% {
+      transform: none;
+    }
+
+    20% {
+      transform: rotate(-10deg);
+    }
+
+    40% {
+      transform: rotate(9deg);
+    }
+
+    60% {
+      transform: rotate(-6deg);
+    }
+
+    80% {
+      transform: rotate(4deg);
+    }
+  }
+
+  .monitor.is-defect .line__defect {
+    animation: defect-drop 1.7s var(--ease-out) forwards;
+  }
+
+  @keyframes defect-drop {
+    0% {
+      opacity: 0;
+      transform: translateX(calc(-60px * var(--dir)));
+    }
+
+    12% {
+      opacity: 1;
+    }
+
+    50% {
+      transform: translateX(0);
+      background: var(--accent);
+    }
+
+    60% {
+      transform: translateX(0);
+      background: var(--danger);
+      box-shadow: 0 0 0 4px var(--danger-soft);
+    }
+
+    100% {
+      transform: translate(0, 6px) scale(.3);
+      opacity: 0;
+      background: var(--danger);
+    }
+  }
+
+  /* ---- integrated ERP hub: two batches orbit a 10s supply chain,
+     each module sends data to the core as a batch arrives ---- */
+  .hub__item {
+    animation: hub-orbit 10s var(--ease-in-out) infinite;
+  }
+
+  .hub__mat {
+    animation: hub-mat 10s linear infinite;
+  }
+
+  .hub__good {
+    animation: hub-good 10s linear infinite;
+  }
+
+  .hub__item--b,
+  .hub__item--b .hub__mat,
+  .hub__item--b .hub__good {
+    animation-delay: -5s;
+  }
+
+  @keyframes hub-orbit {
+    0% {
+      offset-distance: 0%;
+      opacity: 0;
+    }
+
+    3% {
+      opacity: 1;
+    }
+
+    10% {
+      offset-distance: 0%;
+    }
+
+    20%,
+    30% {
+      offset-distance: 20%;
+    }
+
+    40%,
+    50% {
+      offset-distance: 40%;
+    }
+
+    60%,
+    70% {
+      offset-distance: 60%;
+    }
+
+    80%,
+    88% {
+      offset-distance: 80%;
+      opacity: 1;
+    }
+
+    92%,
+    100% {
+      offset-distance: 80%;
+      opacity: 0;
+    }
+  }
+
+  /* raw material becomes finished goods while it sits in production */
+  @keyframes hub-mat {
+
+    0%,
+    44.9% {
+      opacity: 1;
+    }
+
+    45%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes hub-good {
+
+    0%,
+    44.9% {
+      opacity: 0;
+    }
+
+    45%,
+    100% {
+      opacity: 1;
+    }
+  }
+
+  .hub__node circle {
+    animation: hub-busy 5s linear infinite;
+  }
+
+  .hub__node path {
+    animation: hub-busy-icon 5s linear infinite;
+  }
+
+  .hub__node--1 circle,
+  .hub__node--1 path {
+    animation-delay: 2s;
+  }
+
+  .hub__node--2 circle,
+  .hub__node--2 path {
+    animation-delay: 4s;
+  }
+
+  .hub__node--3 circle,
+  .hub__node--3 path {
+    animation-delay: 1s;
+  }
+
+  .hub__node--4 circle,
+  .hub__node--4 path {
+    animation-delay: 3s;
+  }
+
+  @keyframes hub-busy {
+
+    0%,
+    20% {
+      stroke: var(--accent);
+      fill: var(--accent-soft);
+    }
+
+    24%,
+    100% {
+      stroke: var(--line-strong);
+      fill: var(--surface);
+    }
+  }
+
+  @keyframes hub-busy-icon {
+
+    0%,
+    20% {
+      fill: var(--accent);
+    }
+
+    24%,
+    100% {
+      fill: var(--ink-2);
+    }
+  }
+
+  .hub__info {
+    animation: hub-info 5s var(--ease-in-out) infinite;
+  }
+
+  .hub__info--0 {
+    animation-delay: .2s;
+  }
+
+  .hub__info--1 {
+    animation-delay: 2.2s;
+  }
+
+  .hub__info--2 {
+    animation-delay: 4.2s;
+  }
+
+  .hub__info--3 {
+    animation-delay: 1.2s;
+  }
+
+  .hub__info--4 {
+    animation-delay: 3.2s;
+  }
+
+  @keyframes hub-info {
+    0% {
+      offset-distance: 0%;
+      opacity: 0;
+    }
+
+    3% {
+      opacity: 1;
+    }
+
+    14% {
+      offset-distance: 100%;
+      opacity: 1;
+    }
+
+    17%,
+    100% {
+      offset-distance: 100%;
+      opacity: 0;
+    }
+  }
+
+  .hub__wave {
+    animation: hub-wave 1s var(--ease-out) .95s infinite;
+  }
+
+  @keyframes hub-wave {
+    0% {
+      opacity: .7;
+      transform: scale(1);
+    }
+
+    100% {
+      opacity: 0;
+      transform: scale(1.45);
+    }
+  }
+
+  .erp__sync {
+    animation: sync-blink 2s var(--ease-out) 1s infinite;
+  }
+
+  .erp__app:nth-child(2) .erp__sync {
+    animation-delay: 1.3s;
+  }
+
+  .erp__app:nth-child(3) .erp__sync {
+    animation-delay: 1.6s;
+  }
+
+  @keyframes sync-blink {
+    0% {
+      box-shadow: 0 0 0 0 var(--accent-glow);
+    }
+
+    60%,
+    100% {
+      box-shadow: 0 0 0 7px transparent;
+    }
+  }
+
   /* ---- mobile menu ---- */
   html.menu-open .menu__links li {
     animation: menu-in 560ms var(--ease-out) backwards;
@@ -4633,6 +5595,8 @@ html[lang="fa"] .contact__title {
   .stack__rail,
   .dia,
   .flow,
+  .monitor,
+  .erp,
   .award,
   .course__arrow,
   .teaching__cta,
